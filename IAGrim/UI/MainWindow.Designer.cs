@@ -23,11 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsStashStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageItems = new System.Windows.Forms.TabPage();
             this.searchPanel = new System.Windows.Forms.Panel();
@@ -36,44 +32,12 @@
             this.settingsPanel = new System.Windows.Forms.Panel();
             this.tabPageMods = new System.Windows.Forms.TabPage();
             this.modsPanel = new System.Windows.Forms.Panel();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.trayContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.statusStrip.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPageItems.SuspendLayout();
             this.searchPanel.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
             this.tabPageMods.SuspendLayout();
-            this.trayContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // statusStrip
-            // 
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel,
-            this.tsStashStatus});
-            this.statusStrip.Location = new System.Drawing.Point(0, 590);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(937, 22);
-            this.statusStrip.TabIndex = 25;
-            this.statusStrip.Text = "statusStrip1";
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(830, 17);
-            this.statusLabel.Spring = true;
-            this.statusLabel.Text = "GD Item Assistant";
-            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tsStashStatus
-            // 
-            this.tsStashStatus.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.tsStashStatus.Name = "tsStashStatus";
-            this.tsStashStatus.Size = new System.Drawing.Size(92, 17);
-            this.tsStashStatus.Text = "Stash: Unknown";
-            this.tsStashStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tabControl1
             // 
@@ -169,67 +133,31 @@
             this.modsPanel.Size = new System.Drawing.Size(937, 557);
             this.modsPanel.TabIndex = 1;
             // 
-            // notifyIcon1
-            // 
-            this.notifyIcon1.BalloonTipTitle = "Item Assistant";
-            this.notifyIcon1.ContextMenuStrip = this.trayContextMenuStrip;
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "GD Item Assistant";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
-            // 
-            // trayContextMenuStrip
-            // 
-            this.trayContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem});
-            this.trayContextMenuStrip.Name = "trayContextMenuStrip";
-            this.trayContextMenuStrip.Size = new System.Drawing.Size(94, 26);
-            this.trayContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.trayContextMenuStrip_Opening);
-            // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(937, 612);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.statusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.Tag = "iatag_ui_itemassistant";
             this.Text = "Grim Dawn Item Assistant";
             this.Load += new System.EventHandler(this.MainWindow_Load);
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPageItems.ResumeLayout(false);
             this.searchPanel.ResumeLayout(false);
             this.tabPageSettings.ResumeLayout(false);
             this.tabPageMods.ResumeLayout(false);
-            this.trayContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
-        private System.Windows.Forms.ToolStripStatusLabel tsStashStatus;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageItems;
         private System.Windows.Forms.TabPage tabPageSettings;
         private System.Windows.Forms.Panel settingsPanel;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
-        private System.Windows.Forms.ContextMenuStrip trayContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPageMods;
         private System.Windows.Forms.Panel modsPanel;
         private System.Windows.Forms.Panel searchPanel;

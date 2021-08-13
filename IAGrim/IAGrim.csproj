@@ -200,7 +200,6 @@
     <Compile Include="Database\Migrations\MigrationHandler.cs" />
     <Compile Include="Database\Model\BaseItem.cs" />
     <Compile Include="Database\Model\DatabaseItemDto.cs" />
-    <Compile Include="Database\Model\DeletedPlayerItem.cs" />
     <Compile Include="Database\Model\ItemSkill.cs" />
     <Compile Include="Database\Model\ItemTag.cs" />
     <Compile Include="Database\Model\RecipeDbStatRow.cs" />
@@ -327,10 +326,6 @@
     <Compile Include="Utilities\HelperClasses\StashAvailability.cs" />
     <Compile Include="Utilities\ItemHtmlWriter.cs" />
     <Compile Include="Utilities\Logging\TextBoxAppender.cs" />
-    <Compile Include="Utilities\RectanglePacker\DynamicPacker.cs" />
-    <Compile Include="Utilities\RectanglePacker\Packer.cs" />
-    <Compile Include="Utilities\RectanglePacker\PackerMode.cs" />
-    <Compile Include="Utilities\RectanglePacker\Shape.cs" />
     <Compile Include="Utilities\Registry\RegistryHelper.cs" />
     <Compile Include="Utilities\TempFile.cs" />
     <Compile Include="Utilities\TemporaryCopy.cs" />
@@ -386,9 +381,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\static\languages.png" />
-    <EmbeddedResource Include="Database\Model\DeletedPlayerItem.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Content Include="Resources\componentAssembler.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

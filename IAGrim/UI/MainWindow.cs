@@ -29,9 +29,6 @@ namespace IAGrim.UI {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
         readonly CefBrowserHandler _cefBrowserHandler;
 
-        private readonly ISettingsReadController _settingsController = new SettingsController();
-
-        private FormWindowState _previousWindowState = FormWindowState.Normal;
         private readonly TooltipHelper _tooltipHelper = new TooltipHelper();
         private DateTime _lastTimeNotMinimized = DateTime.Now;
 
@@ -102,7 +99,6 @@ namespace IAGrim.UI {
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e) {
             // No idea which of these are triggering on rare occasions, perhaps Deactivate, sizechanged or filterWindow.
             FormClosing -= MainWindow_FormClosing;
-            SizeChanged -= OnMinimizeWindow;
 
             _stashFileMonitor?.Dispose();
             _stashFileMonitor = null;
@@ -119,21 +115,6 @@ namespace IAGrim.UI {
             IterAndCloseForms(Controls);
         }
 
-
-        private void SetFeedback(string feedback) {
-            try {
-                if (InvokeRequired) {
-                    Invoke((MethodInvoker) delegate { SetFeedback(feedback); });
-                }
-                else {
-                    statusLabel.Text = feedback.Replace("\\n", " - ");
-                    _cefBrowserHandler.ShowMessage(feedback, "Info");
-                }
-            }
-            catch (ObjectDisposedException) {
-                Logger.Debug("Attempted to set feedback, but UI already disposed. (Probably shutting down)");
-            }
-        }
 
         private void TimerTickLookForGrimDawn(object sender, EventArgs e) {
             System.Windows.Forms.Timer timer = sender as System.Windows.Forms.Timer;
@@ -165,23 +146,13 @@ namespace IAGrim.UI {
 
 
             ExceptionReporter.EnableLogUnhandledOnThread();
-            SizeChanged += OnMinimizeWindow;
-
             buttonDevTools.Visible = Debugger.IsAttached;
 
-            _stashManager = new StashManager(_databaseItemStatDao, SetFeedback, () => { });
+            _stashManager = new StashManager();
             _stashFileMonitor.OnStashModified += (_, __) => {
                 StashEventArg args = __ as StashEventArg;
                 _stashManager.UpdateUnlooted(args?.Filename);
             };
-            if (!_stashFileMonitor.StartMonitorStashfile(GlobalPaths.SavePath)) {
-                MessageBox.Show("Ooops!\nIt seems you are synchronizing your saves to steam cloud..\nThis tool is unfortunately not compatible.\n");
-                Process.Start("http://www.grimdawn.com/forums/showthread.php?t=20752");
-
-                if (!Debugger.IsAttached)
-                    Close();
-
-            }
 
             _cefBrowserHandler.InitializeChromium(JsBind);
             searchPanel.Controls.Add(_cefBrowserHandler.BrowserControl);
@@ -192,7 +163,6 @@ namespace IAGrim.UI {
             if (!string.IsNullOrEmpty(gdPath)) {
             } else {
                 Logger.Warn("Could not find the Grim Dawn install location");
-                statusLabel.Text = "Could not find the Grim Dawn install location";
 
                 var timer = new System.Windows.Forms.Timer();
                 timer.Tick += TimerTickLookForGrimDawn;
@@ -253,49 +223,6 @@ namespace IAGrim.UI {
             _jsonBindingService = new JsonBindingService(_stashManager, JsBind, _cefBrowserHandler, new RecipeService(_databaseItemDao), costCalculationService);
         }
 
-
-
-#region Tray and Menu
-
-        /// <summary>
-        /// Minimize to tray
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnMinimizeWindow(object sender, EventArgs e) {
-            try {
-                if (_settingsController.MinimizeToTray) {
-                    if (WindowState == FormWindowState.Minimized) {
-                        Hide();
-                        notifyIcon1.Visible = true;
-                    } else /*if (this.WindowState == FormWindowState.Normal)*/ {
-                        notifyIcon1.Visible = false;
-                        _previousWindowState = WindowState;
-                    }
-                }
-            } catch (Exception ex) {
-                Logger.Warn(ex.Message);
-                Logger.Warn(ex.StackTrace);
-            }
-
-            _lastTimeNotMinimized = DateTime.Now;
-        }
-
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e) {
-            Visible = true;
-            notifyIcon1.Visible = false;
-            WindowState = _previousWindowState;
-        }
-
-        private void trayContextMenuStrip_Opening(object sender, CancelEventArgs e) {
-            e.Cancel = false;
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
-            Close();
-        }
-
-        #endregion Tray and Menu
 
 
         private void button1_Click(object sender, EventArgs e) {

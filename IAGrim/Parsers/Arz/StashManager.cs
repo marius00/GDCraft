@@ -14,8 +14,6 @@ using IAGrim.Services;
 using IAGrim.StashFile;
 using IAGrim.UI;
 using IAGrim.Utilities;
-using IAGrim.Utilities.HelperClasses;
-using IAGrim.Utilities.RectanglePacker;
 using log4net;
 using Timer = System.Timers.Timer;
 
@@ -28,9 +26,6 @@ namespace IAGrim.Parsers.Arz {
         public event EventHandler StashUpdated;
 
         public StashManager(
-            IDatabaseItemStatDao dbItemStatDao,
-            Action<string> setFeedback,
-            Action performedLootCallback
             ) {
 
             string path = GlobalPaths.SavePath;

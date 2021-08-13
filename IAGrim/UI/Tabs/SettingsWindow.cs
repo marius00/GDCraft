@@ -76,11 +76,6 @@ namespace IAGrim.UI {
             if (lastUpdate < lastPatch)
                 this.labelLastUpdated.ForeColor = Color.Red;
 
-
-            radioBeta.Checked = (bool)Properties.Settings.Default.SubscribeExperimentalUpdates;
-            radioRelease.Checked = !(bool)Properties.Settings.Default.SubscribeExperimentalUpdates;
-            //controller.LoadDefaults();
-
         }
 
         private void buttonViewBackups_Click(object sender, EventArgs e) {
