@@ -23,9 +23,6 @@ namespace IAGrim.UI {
         private readonly string _path;
         private List<FirefoxRadioButton> _checkboxes = new List<FirefoxRadioButton>();
         private readonly IItemTagDao _itemTagDao;
-        private readonly IDatabaseSettingDao _databaseSettingDao;
-        private readonly IPlayerItemDao _playerItemDao;
-        private readonly ArzParser _parser;
         private readonly ParsingService _parsingService;
 
         /// <summary>
@@ -34,17 +31,11 @@ namespace IAGrim.UI {
         /// <param name="path">Path to Grim Dawn install</param>
         public LanguagePackPicker(
             IItemTagDao itemTagDao, 
-            IDatabaseSettingDao databaseSettingDao,
-            IPlayerItemDao playerItemDao,
-            ArzParser parser, 
             string path, ParsingService parsingService) {
             InitializeComponent();
             this._path = path;
             _parsingService = parsingService;
             this._itemTagDao = itemTagDao;
-            this._databaseSettingDao = databaseSettingDao;
-            this._playerItemDao = playerItemDao;
-            this._parser = parser;
 
             var buttonTag = GlobalSettings.Language.GetTag("iatag_ui_lang_button_change_language");
             if (!string.IsNullOrEmpty(buttonTag)) {
@@ -80,9 +71,6 @@ namespace IAGrim.UI {
 
                         // TODO: Grab tags from loader and save to sql
                         _itemTagDao.Save(loader.GetItemTags(), new ProgressTracker());
-
-                        UpdatingPlayerItemsScreen x = new UpdatingPlayerItemsScreen(_playerItemDao);
-                        x.ShowDialog();
                     }
                     // Load the GD one
                     else {
@@ -96,10 +84,6 @@ namespace IAGrim.UI {
                         else {
                             Logger.Warn("Could not find the Grim Dawn install location");
                         }
-
-                        // Update item stats as well
-                        UpdatingPlayerItemsScreen x = new UpdatingPlayerItemsScreen(_playerItemDao);
-                        x.ShowDialog();
 
                     }
                 }

@@ -27,10 +27,7 @@ namespace IAGrim.UI {
         private readonly IDatabaseSettingDao _settingsDao;
         private readonly IDatabaseItemDao _itemDao;
         private readonly ArzParser _parser;
-        private readonly IPlayerItemDao _playerItemDao;
         private readonly IItemTagDao _itemTagDao;
-        private readonly GDTransferFile[] _modFilter;
-        private readonly StashManager _stashManager;
         private readonly ParsingService _parsingService;
 
         public SettingsWindow(
@@ -39,19 +36,14 @@ namespace IAGrim.UI {
             Action itemViewUpdateTrigger, 
             IDatabaseSettingDao settingsDao, 
             IDatabaseItemDao itemDao,
-            IPlayerItemDao playerItemDao,
             ArzParser parser,
-            GDTransferFile[] modFilter,
-            StashManager stashManager, ParsingService parsingService) {            
+            ParsingService parsingService) {            
             InitializeComponent();
             this._tooltipHelper = tooltipHelper;
             this._itemViewUpdateTrigger = itemViewUpdateTrigger;
             this._settingsDao = settingsDao;
             this._itemDao = itemDao;
-            this._playerItemDao = playerItemDao;
             this._parser = parser;
-            this._modFilter = modFilter;
-            this._stashManager = stashManager;
             _parsingService = parsingService;
             _itemTagDao = itemTagDao;
 
@@ -143,7 +135,7 @@ namespace IAGrim.UI {
 
 
         private void buttonLanguageSelect_Click(object sender, EventArgs e) {
-            new LanguagePackPicker(_itemTagDao, _settingsDao, _playerItemDao, _parser, GrimDawnDetector.GetGrimLocation(), _parsingService)
+            new LanguagePackPicker(_itemTagDao, GrimDawnDetector.GetGrimLocation(), _parsingService)
                 .ShowDialog();
 
             _itemViewUpdateTrigger?.Invoke();

@@ -9,12 +9,10 @@ using IAGrim.Services.Crafting.dto;
 
 namespace IAGrim.Services.Crafting {
     class CostCalculationService {
-        private readonly IPlayerItemDao _playerItemDao;
         private readonly StashManager _stashManager;
         private string _mod;
 
-        public CostCalculationService(IPlayerItemDao playerItemDao, StashManager stashManager) {
-            _playerItemDao = playerItemDao;
+        public CostCalculationService(StashManager stashManager) {
             _stashManager = stashManager;
         }
 
@@ -28,7 +26,7 @@ namespace IAGrim.Services.Crafting {
                 GetRecords(recipe, recipeRecords);
 
                 // Fetch player held items
-                Dictionary<string, int> storedItems = _playerItemDao.GetCountByRecord(_mod);
+                Dictionary<string, int> storedItems = new Dictionary<string, int>();
                 var stashItems = _stashManager.UnlootedItems
                     .Where(item => recipeRecords.Contains(item.BaseRecord))
                     .Where(item => item.MateriaCombines == 0 || item.MateriaCombines >= 3) // "Good enough" for now, TODO: Check the DB for the real amount

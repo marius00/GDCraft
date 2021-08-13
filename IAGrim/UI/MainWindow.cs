@@ -19,7 +19,6 @@ using IAGrim.UI.Controller;
 using IAGrim.UI.Misc;
 using IAGrim.Utilities;
 using IAGrim.Utilities.HelperClasses;
-using IAGrim.Utilities.RectanglePacker;
 using log4net;
 using MoreLinq;
 using Timer = System.Timers.Timer;
@@ -36,7 +35,6 @@ namespace IAGrim.UI {
         private FormWindowState _previousWindowState = FormWindowState.Normal;
         private readonly TooltipHelper _tooltipHelper = new TooltipHelper();
         private DateTime _lastTimeNotMinimized = DateTime.Now;
-        private readonly DynamicPacker _dynamicPacker;
 
         private StashManager _stashManager;
         private StashFileMonitor _stashFileMonitor = new StashFileMonitor();
@@ -48,7 +46,6 @@ namespace IAGrim.UI {
         private readonly IItemTagDao _itemTagDao;
         private readonly IDatabaseItemDao _databaseItemDao;
         private readonly IDatabaseItemStatDao _databaseItemStatDao;
-        private readonly IPlayerItemDao _playerItemDao;
         private readonly IDatabaseSettingDao _databaseSettingDao;
         private readonly ArzParser _arzParser;
         private readonly RecipeParser _recipeParser;
@@ -56,16 +53,11 @@ namespace IAGrim.UI {
 
         private readonly Stopwatch _reportUsageStatistics;
 
-        [DllImport("kernel32")]
-        private static extern UInt64 GetTickCount64();
-
-
 
         public MainWindow(
             CefBrowserHandler browser,
              IDatabaseItemDao databaseItemDao,
              IDatabaseItemStatDao databaseItemStatDao,
-             IPlayerItemDao playerItemDao,
              IDatabaseSettingDao databaseSettingDao,
              ArzParser arzParser,
              IRecipeItemDao recipeItemDao,
@@ -77,10 +69,8 @@ namespace IAGrim.UI {
             _reportUsageStatistics = new Stopwatch();
             _reportUsageStatistics.Start();
 
-            _dynamicPacker = new DynamicPacker(databaseItemStatDao);
             _databaseItemDao = databaseItemDao;
             _databaseItemStatDao = databaseItemStatDao;
-            _playerItemDao = playerItemDao;
             _databaseSettingDao = databaseSettingDao;
             _arzParser = arzParser;
             _recipeParser = new RecipeParser(recipeItemDao);
@@ -183,7 +173,7 @@ namespace IAGrim.UI {
 
             buttonDevTools.Visible = Debugger.IsAttached;
 
-            _stashManager = new StashManager(_playerItemDao, _databaseItemStatDao, SetFeedback, () => { });
+            _stashManager = new StashManager(_databaseItemStatDao, SetFeedback, () => { });
             _stashFileMonitor.OnStashModified += (_, __) => {
                 StashEventArg args = __ as StashEventArg;
                 _stashManager.UpdateUnlooted(args?.Filename);
@@ -226,7 +216,7 @@ namespace IAGrim.UI {
             var addAndShow = UIHelper.AddAndShow;
 
 
-            addAndShow(new ModsDatabaseConfig(() => { }, _databaseSettingDao, _arzParser, _playerItemDao, _parsingService), modsPanel);
+            addAndShow(new ModsDatabaseConfig(() => { }, _parsingService), modsPanel);
 
             addAndShow(
                 new SettingsWindow(
@@ -235,10 +225,7 @@ namespace IAGrim.UI {
                     () => { },
                     _databaseSettingDao,
                     _databaseItemDao,
-                    _playerItemDao,
                     _arzParser,
-                    new GDTransferFile[]{},
-                    _stashManager,
                     _parsingService
                 ),
                 settingsPanel);
@@ -266,35 +253,6 @@ namespace IAGrim.UI {
 
             LocalizationLoader.ApplyLanguage(Controls, GlobalSettings.Language);
 
-
-            // Initialize the "stash packer" used to find item positions for transferring items ingame while the stash is open
-            {
-                _dynamicPacker.Initialize(8, 16);
-
-                var transferFiles = GlobalPaths.TransferFiles;
-                if (transferFiles.Count > 0) {
-                    var file = transferFiles.MaxBy(m => m.LastAccess);
-                    var stash = StashManager.GetStash(file.Filename);
-                    if (stash != null) {
-                        _dynamicPacker.Initialize(stash.Width, stash.Height);
-                        if (stash.Tabs.Count >= 3) {
-                            foreach (var item in stash.Tabs[2].Items) {
-
-                                byte[] bx = BitConverter.GetBytes(item.XOffset);
-                                uint x = (uint)BitConverter.ToSingle(bx, 0);
-
-                                byte[] by = BitConverter.GetBytes(item.YOffset);
-                                uint y = (uint)BitConverter.ToSingle(by, 0);
-
-                                _dynamicPacker.Insert(item.BaseRecord, item.Seed, x, y);
-                            }
-                        }
-                    }
-                }
-            }
-
-
-
             Application.AddMessageFilter(new MousewheelMessageFilter());
 
 
@@ -303,7 +261,7 @@ namespace IAGrim.UI {
                 this.Text += $" - {titleTag}";
             }
 
-            var costCalculationService = new CostCalculationService(_playerItemDao, _stashManager);
+            var costCalculationService = new CostCalculationService(_stashManager);
             _jsonBindingService = new JsonBindingService(_stashManager, JsBind, _cefBrowserHandler, new RecipeService(_databaseItemDao), costCalculationService);
         }
 

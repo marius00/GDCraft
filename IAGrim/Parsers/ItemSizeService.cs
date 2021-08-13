@@ -36,24 +36,6 @@ namespace IAGrim.Parsers {
             }
         }
 
-        public void MapItemSize(Item item) {
-            Dictionary<string, string> iconMap = dao.MapItemBitmaps(new List<string>() { item.BaseRecord });
-
-            var bitmap = string.Format("{0}.png", Path.GetFileName(iconMap[item.BaseRecord].Replace(".dbr", ".tex")));
-            MapItemSize(bitmap, out item.Height, out item.Width);
-        }
-
-        public void CacheItemSizes(IEnumerable<Database.PlayerItem> items) {
-            Dictionary<string, string> iconMap = dao.MapItemBitmaps(items.Select(m => m.BaseRecord).ToList());
-
-            foreach (var item in items) {
-                var bitmap = string.Format("{0}.png", Path.GetFileName(iconMap[item.BaseRecord].Replace(".dbr", ".tex")));
-                int w, h;
-                MapItemSize(bitmap, out h, out w);
-            }
-        }
-
-
         public static void MapItemSize(string filename, out int height, out int width) {            
             int w = 2;
             int h = 4;

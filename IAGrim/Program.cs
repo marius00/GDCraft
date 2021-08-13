@@ -106,7 +106,7 @@ namespace IAGrim {
         /// Upgrade any settings if required
         /// This happens for just about every compile
         /// </summary>
-        private static void UpgradeSettings(IPlayerItemDao playerItemDao) {
+        private static void UpgradeSettings() {
             try {
                 if (Properties.Settings.Default.CallUpgrade) {
                     Properties.Settings.Default.Upgrade();
@@ -165,13 +165,6 @@ namespace IAGrim {
                 Logger.Info($"IA is configured to deposit to stash page #{Properties.Settings.Default.StashToDepositTo}");
             }
 
-            using (var session = factory.OpenSession()) {
-                var numItemsStored = session.CreateCriteria<PlayerItem>()
-                    .SetProjection(NHibernate.Criterion.Projections.RowCountInt64())
-                    .UniqueResult<long>();
-
-                Logger.Info($"There are {numItemsStored} items stored in the database.");
-            }
 
             if (Properties.Settings.Default.BuddySyncEnabled)
                 Logger.Info($"Buddy items is enabled with user id {Properties.Settings.Default.BuddySyncUserIdV2}");
@@ -202,11 +195,6 @@ namespace IAGrim {
                 }
             }
 
-            Logger.Info("There are items stored for the following mods:");
-            foreach (var entry in new PlayerItemDaoImpl(factory, new DatabaseItemStatDaoImpl(factory)).GetModSelection()) {
-                Logger.Info($"Mod: \"{entry.Mod}\", HC: {entry.IsHardcore}");
-            }
-
             var gdPath = new DatabaseSettingDaoImpl(factory).GetCurrentDatabasePath();
             if (string.IsNullOrEmpty(gdPath)) {
                 Logger.Info("The path to Grim Dawn is unknown (not great)");
@@ -228,17 +216,15 @@ namespace IAGrim {
             
             IDatabaseSettingDao databaseSettingDao = new DatabaseSettingRepo(threadExecuter, factory);
             LoadUuid(databaseSettingDao);
-            IPlayerItemDao playerItemDao = new PlayerItemRepo(threadExecuter, factory);
             IDatabaseItemDao databaseItemDao = new DatabaseItemRepo(threadExecuter, factory);
             IDatabaseItemStatDao databaseItemStatDao = new DatabaseItemStatRepo(threadExecuter, factory);
             IItemTagDao itemTagDao = new ItemTagRepo(threadExecuter, factory);
             
             IRecipeItemDao recipeItemDao = new RecipeItemRepo(threadExecuter, factory);
-            IItemSkillDao itemSkillDao  = new ItemSkillRepo(threadExecuter, factory);
-            ArzParser arzParser = new ArzParser(databaseItemDao, databaseItemStatDao, databaseSettingDao, itemSkillDao);
+            ArzParser arzParser = new ArzParser();
 
             // TODO: GD Path has to be an input param, as does potentially mods.
-            ParsingService parsingService = new ParsingService(itemTagDao, null, databaseItemDao, databaseItemStatDao, itemSkillDao, Properties.Settings.Default.LocalizationFile);
+            ParsingService parsingService = new ParsingService(itemTagDao, null, databaseItemDao, databaseItemStatDao, Properties.Settings.Default.LocalizationFile);
 
             PrintStartupInfo(factory);
 
@@ -247,7 +233,7 @@ namespace IAGrim {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Logger.Info("Visual styles enabled..");
-            UpgradeSettings(playerItemDao);
+            UpgradeSettings();
 
             var language = GlobalSettings.Language as StatTranslator.EnglishLanguage;
             if (language != null) {
@@ -261,7 +247,6 @@ namespace IAGrim {
                 _mw = new MainWindow(browser, 
                     databaseItemDao, 
                     databaseItemStatDao, 
-                    playerItemDao, 
                     databaseSettingDao, 
                     arzParser,
                     recipeItemDao,
@@ -309,8 +294,6 @@ namespace IAGrim {
                 } else {
                     Logger.Warn("Could not find the Grim Dawn install location");
                 }
-
-                playerItemDao.UpdateHardcoreSettings();
 
                 _mw.Visible = false;
                 if (DonateNagScreen.CanNag)

@@ -24,14 +24,13 @@
         /// </summary>
         private void InitializeComponent() {
             this.panelBox5 = new PanelBox();
-            this.buttonUpdateItemStats = new FirefoxButton();
+            this.listViewMods = new System.Windows.Forms.ListView();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.listViewInstalls = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buttonForceUpdate = new FirefoxButton();
-            this.listViewMods = new System.Windows.Forms.ListView();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panelBox5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -41,7 +40,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelBox5.Controls.Add(this.listViewMods);
-            this.panelBox5.Controls.Add(this.buttonUpdateItemStats);
             this.panelBox5.Controls.Add(this.listViewInstalls);
             this.panelBox5.Controls.Add(this.buttonForceUpdate);
             this.panelBox5.Font = new System.Drawing.Font("Segoe UI Semibold", 20F);
@@ -55,19 +53,37 @@
             this.panelBox5.Text = "Grim Dawn Database";
             this.panelBox5.TextLocation = "8; 5";
             // 
-            // buttonUpdateItemStats
+            // listViewMods
             // 
-            this.buttonUpdateItemStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUpdateItemStats.EnabledCalc = true;
-            this.buttonUpdateItemStats.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.buttonUpdateItemStats.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(68)))), ((int)(((byte)(80)))));
-            this.buttonUpdateItemStats.Location = new System.Drawing.Point(560, 358);
-            this.buttonUpdateItemStats.Name = "buttonUpdateItemStats";
-            this.buttonUpdateItemStats.Size = new System.Drawing.Size(192, 32);
-            this.buttonUpdateItemStats.TabIndex = 5;
-            this.buttonUpdateItemStats.Tag = "iatag_ui_updateitemstats";
-            this.buttonUpdateItemStats.Text = "Update Item Stats";
-            this.buttonUpdateItemStats.Click += new System.EventHandler(this.buttonUpdateItemStats_Click);
+            this.listViewMods.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewMods.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader4});
+            this.listViewMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.listViewMods.FullRowSelect = true;
+            this.listViewMods.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listViewMods.HideSelection = false;
+            this.listViewMods.Location = new System.Drawing.Point(431, 55);
+            this.listViewMods.MultiSelect = false;
+            this.listViewMods.Name = "listViewMods";
+            this.listViewMods.Size = new System.Drawing.Size(321, 291);
+            this.listViewMods.TabIndex = 6;
+            this.listViewMods.UseCompatibleStateImageBehavior = false;
+            this.listViewMods.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Tag = "iatag_ui_mod_database_mods_header";
+            this.columnHeader2.Text = "Mod";
+            this.columnHeader2.Width = 203;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Tag = "iatag_ui_mod_path";
+            this.columnHeader4.Text = "Path";
+            this.columnHeader4.Width = 200;
             // 
             // listViewInstalls
             // 
@@ -116,38 +132,6 @@
             this.buttonForceUpdate.Text = "Load Database";
             this.buttonForceUpdate.Click += new System.EventHandler(this.buttonForceUpdate_Click);
             // 
-            // listViewMods
-            // 
-            this.listViewMods.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewMods.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2,
-            this.columnHeader4});
-            this.listViewMods.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.listViewMods.FullRowSelect = true;
-            this.listViewMods.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewMods.HideSelection = false;
-            this.listViewMods.Location = new System.Drawing.Point(431, 55);
-            this.listViewMods.MultiSelect = false;
-            this.listViewMods.Name = "listViewMods";
-            this.listViewMods.Size = new System.Drawing.Size(321, 291);
-            this.listViewMods.TabIndex = 6;
-            this.listViewMods.UseCompatibleStateImageBehavior = false;
-            this.listViewMods.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Tag = "iatag_ui_mod_database_mods_header";
-            this.columnHeader2.Text = "Mod";
-            this.columnHeader2.Width = 203;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Tag = "iatag_ui_mod_path";
-            this.columnHeader4.Text = "Path";
-            this.columnHeader4.Width = 200;
-            // 
             // ModsDatabaseConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -169,7 +153,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private FirefoxButton buttonForceUpdate;
         private PanelBox panelBox5;
-        private FirefoxButton buttonUpdateItemStats;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ListView listViewMods;
         private System.Windows.Forms.ColumnHeader columnHeader2;

@@ -21,19 +21,13 @@ using NHibernate.Util;
 namespace IAGrim.UI {
     public partial class ModsDatabaseConfig : Form {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ModsDatabaseConfig));
-        private readonly IDatabaseSettingDao _databaseSettingDao;
         private Action _itemViewUpdateTrigger;
-        private readonly ArzParser _arzParser;
-        private readonly IPlayerItemDao _playerItemDao;
         private readonly ParsingService _parsingService;
         private readonly DatabaseModSelectionService _databaseModSelectionService;
 
-        public ModsDatabaseConfig(Action itemViewUpdateTrigger, IDatabaseSettingDao databaseSettingDao, ArzParser arzParser, IPlayerItemDao playerItemDao, ParsingService parsingService) {
+        public ModsDatabaseConfig(Action itemViewUpdateTrigger, ParsingService parsingService) {
             InitializeComponent();
             this._itemViewUpdateTrigger = itemViewUpdateTrigger;
-            this._databaseSettingDao = databaseSettingDao;
-            this._arzParser = arzParser;
-            this._playerItemDao = playerItemDao;
             _parsingService = parsingService;
             _databaseModSelectionService = new DatabaseModSelectionService();
         }
@@ -94,10 +88,6 @@ namespace IAGrim.UI {
                 Logger.Warn("Could not find the Grim Dawn install location");
             }
 
-            // Update item stats as well
-            UpdatingPlayerItemsScreen x = new UpdatingPlayerItemsScreen(_playerItemDao);
-            x.ShowDialog();
-
 
             if (_itemViewUpdateTrigger != null)
                 _itemViewUpdateTrigger();
@@ -113,15 +103,6 @@ namespace IAGrim.UI {
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
             buttonForceUpdate.Enabled = listViewInstalls.SelectedItems.Count > 0;
-        }
-
-        private void buttonUpdateItemStats_Click(object sender, EventArgs e) {
-            UpdatingPlayerItemsScreen x = new UpdatingPlayerItemsScreen(_playerItemDao);
-            x.ShowDialog();
-
-
-            if (_itemViewUpdateTrigger != null)
-                _itemViewUpdateTrigger();
         }
     }
 }

@@ -176,7 +176,6 @@
   <ItemGroup>
     <Compile Include="Database\DAO\DatabaseItemStatDaoImpl.cs" />
     <Compile Include="Database\DAO\Dto\StatFetch.cs" />
-    <Compile Include="Database\DAO\ItemSkillDaoImpl.cs" />
     <Compile Include="Database\DAO\ItemTagDaoImpl.cs" />
     <Compile Include="Database\DAO\RecipeItemDaoImpl.cs" />
     <Compile Include="Database\DAO\Table\BuddyItemRecordTable.cs" />
@@ -195,9 +194,7 @@
     <Compile Include="Database\Interfaces\IDatabaseItemStatDao.cs" />
     <Compile Include="Database\Interfaces\IDatabaseSettingDao.cs" />
     <Compile Include="Database\Interfaces\IBaseDao.cs" />
-    <Compile Include="Database\Interfaces\IItemSkillDao.cs" />
     <Compile Include="Database\Interfaces\IItemTagDao.cs" />
-    <Compile Include="Database\Interfaces\IPlayerItemDao.cs" />
     <Compile Include="Database\Interfaces\IRecipeItemDao.cs" />
     <Compile Include="Database\Migrations\AddBuddyItemMigrations.cs" />
     <Compile Include="Database\Migrations\AddSkillTables.cs" />
@@ -208,22 +205,16 @@
     <Compile Include="Database\Model\DeletedPlayerItem.cs" />
     <Compile Include="Database\Model\ItemSkill.cs" />
     <Compile Include="Database\Model\ItemTag.cs" />
-    <Compile Include="Database\Model\PlayerItemRecord.cs" />
-    <Compile Include="Database\Model\PlayerItemSkill.cs" />
-    <Compile Include="Database\Model\PlayerItemStat.cs" />
     <Compile Include="Database\Model\RecipeDbStatRow.cs" />
     <Compile Include="Database\Model\SetBonusRecord.cs" />
     <Compile Include="Database\Model\SkillModifierStat.cs" />
     <Compile Include="Database\SessionFactoryLoader\SessionFactory.cs" />
-    <Compile Include="Database\SearchResult.cs" />
     <Compile Include="Database\Synchronizer\BasicSynchronizer.cs" />
     <Compile Include="Database\Synchronizer\Core\ThreadExecuter.cs" />
     <Compile Include="Database\Synchronizer\ItemTagRepo.cs" />
     <Compile Include="Database\Synchronizer\DatabaseItemRepo.cs" />
     <Compile Include="Database\Synchronizer\DatabaseItemStatRepo.cs" />
     <Compile Include="Database\Synchronizer\DatabaseSettingRepo.cs" />
-    <Compile Include="Database\Synchronizer\ItemSkillRepo.cs" />
-    <Compile Include="Database\Synchronizer\PlayerItemRepo.cs" />
     <Compile Include="Database\Synchronizer\RecipeItemRepo.cs" />
     <Compile Include="Parsers\Arz\ArzParser.cs" />
     <Compile Include="Parsers\Arz\ComplexItemParser.cs" />
@@ -232,16 +223,12 @@
     <Compile Include="Parsers\Arz\LocalizationLoader.cs" />
     <Compile Include="Parsers\Arz\StashFileMonitor.cs" />
     <Compile Include="Parsers\Arz\StashManager.cs" />
-    <Compile Include="Parsers\Arz\StatUpdateUIBackgroundWorker.cs" />
     <Compile Include="Database\DAO\BaseDao.cs" />
     <Compile Include="Database\Model\DatabaseItemStat.cs" />
-    <Compile Include="Database\Interfaces\PlayerHeldItem.cs" />
-    <Compile Include="Database\DAO\PlayerItemDaoImpl.cs" />
     <Compile Include="Database\DAO\DatabaseSettingDaoImpl.cs" />
     <Compile Include="Database\Model\DatabaseItem.cs" />
     <Compile Include="Database\DAO\DatabaseItemDaoImpl.cs" />
     <Compile Include="Database\Model\DatabaseSetting.cs" />
-    <Compile Include="Database\Model\PlayerItem.cs" />
     <Compile Include="Database\Model\RecipeItem.cs" />
     <Compile Include="Database\DAO\SessionFactory.cs" />
     <Compile Include="Parsers\GameDataParsing\Model\ItemAccumulator.cs" />
@@ -325,12 +312,6 @@
     </Compile>
     <Compile Include="UI\Tabs\Util\ModSelectionHandler.cs" />
     <Compile Include="UI\UIHelper.cs" />
-    <Compile Include="UI\Popups\UpdatingPlayerItemsScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\UpdatingPlayerItemsScreen.Designer.cs">
-      <DependentUpon>UpdatingPlayerItemsScreen.cs</DependentUpon>
-    </Compile>
     <Compile Include="Utilities\DependencyChecker.cs" />
     <Compile Include="Utilities\GlobalPaths.cs" />
     <Compile Include="Utilities\GlobalSettings.cs" />
@@ -409,16 +390,12 @@
     <EmbeddedResource Include="UI\Tabs\SettingsWindow.resx">
       <DependentUpon>SettingsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\UpdatingPlayerItemsScreen.resx">
-      <DependentUpon>UpdatingPlayerItemsScreen.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\static\languages.png" />
     <EmbeddedResource Include="Database\Model\DeletedPlayerItem.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Database\Model\PlayerItemRecord.hbm.xml" />
     <Content Include="Resources\componentAssembler.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -571,17 +548,11 @@
     <EmbeddedResource Include="Database\Model\DatabaseSetting.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Database\Model\PlayerItem.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Database\Model\DatabaseItemStat.hbm.xml" />
     <EmbeddedResource Include="Database\Model\RecipeItem.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Database\Model\ItemTag.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Database\Model\PlayerItemStat.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="gd.ico" />

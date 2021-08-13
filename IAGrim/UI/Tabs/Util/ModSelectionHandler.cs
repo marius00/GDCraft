@@ -19,18 +19,16 @@ namespace IAGrim.UI.Tabs.Util {
         private ComboBox _cbModFilter;
         private readonly Action _updateView;
         private readonly Action<string> _setStatus;
-        private readonly IPlayerItemDao _playerItemDao;
         private string _lastMod;
         private bool _lastHardcoreSetting;
 
         public GDTransferFile SelectedMod => _cbModFilter.SelectedItem as GDTransferFile;
 
-        public ModSelectionHandler(ComboBox cbModFilter, IPlayerItemDao playerItemDao, Action updateView, Action<string> setStatus) {
+        public ModSelectionHandler(ComboBox cbModFilter, Action updateView, Action<string> setStatus) {
             this._cbModFilter = cbModFilter;
             _cbModFilter.DropDown += modFilter_DropDown;
             this._cbModFilter.SelectedIndexChanged += new System.EventHandler(this.cbModFilter_SelectedIndexChanged);
             _updateView = updateView;
-            _playerItemDao = playerItemDao;
             _setStatus = setStatus;
         }
 
@@ -81,22 +79,9 @@ namespace IAGrim.UI.Tabs.Util {
             }
         }
 
-        public bool HasMods => GetAvailableModSelection().Any(m => !string.IsNullOrEmpty(m.Mod));
-
 
         public GDTransferFile[] GetAvailableModSelection() {
             var mods = GlobalPaths.TransferFiles;
-
-            foreach (var entry in _playerItemDao.GetModSelection()) {
-                if (!mods.Any(m => m.IsHardcore == entry.IsHardcore && m.Mod?.ToLower() == entry.Mod?.ToLower())) {
-
-                    mods.Add(new GDTransferFile {
-                        Mod = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(entry.Mod ?? string.Empty),
-                        IsHardcore = entry.IsHardcore,
-                        Enabled = true
-                    });
-                }
-            }
 
             if (mods.Count != _numAvailableModFiltersLastUpdate) {
                 List<GDTransferFile> result = new List<GDTransferFile>();

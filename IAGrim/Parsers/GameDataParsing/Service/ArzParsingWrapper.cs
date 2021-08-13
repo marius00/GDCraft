@@ -156,27 +156,5 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
             Logger.Debug($"Classified {petItems.Count()} records as pet stats");
         }
 
-        public void ParseComplexItems(IItemSkillDao itemSkillDao, ProgressTracker tracker) {
-            var mappedTags = _tagAccumulator.MappedTags;
-            var skillParser = new ComplexItemParser(Items, mappedTags);
-            skillParser.Generate(tracker);
-            itemSkillDao.Save(skillParser.Skills, false);
-            itemSkillDao.Save(skillParser.SkillItemMapping, false);
-        }
-
-
-        public List<DatabaseItemStat> GenerateSpecialRecords(ProgressTracker tracker) {
-            var skills = Items.Where(m => m.Record.Contains("/skills/")).ToList();
-            List<DatabaseItemStat> result = new List<DatabaseItemStat>();
-
-            tracker.MaxValue = Items.Count;
-            foreach (var item in Items) {
-                ArzParser.GetSpecialMasteryStats(result, item, Items);
-                ArzParser.GetSpecialSkillAugments(result, item, Items, skills, _tagAccumulator.MappedTags);
-                tracker.Increment();
-            }
-
-            return result;
-        }
     }
 }

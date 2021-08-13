@@ -10,7 +10,7 @@ using System.Text;
 using IAGrim.Database.Model;
 
 namespace IAGrim.Database {
-    public class RecipeItem : PlayerHeldItem, IComparable {
+    public class RecipeItem {
         public virtual long Id { get; set; }
 
         public virtual string BaseRecord { get; set; }
@@ -26,13 +26,7 @@ namespace IAGrim.Database {
             get;
             set;
         }
-        public virtual PlayerItemSkill Skill { get; } = null;
 
-        public virtual IList<TranslatedStat> PetStats {
-            get {
-                return GlobalSettings.StatManager.ProcessStats(new HashSet<IItemStat>(Tags), TranslatedStatType.PET);
-            }
-        }
 
         public virtual List<SkillModifierStat> ModifiedSkills { get; } = new List<SkillModifierStat>();
 
@@ -69,29 +63,5 @@ namespace IAGrim.Database {
 
         public virtual string Name => Internal?.Name;
 
-        public override bool Equals(object obj) {
-            PlayerHeldItem that = obj as PlayerHeldItem;
-            if (that != null)
-                return this.BaseRecord.Equals(that.BaseRecord);
-
-            return base.Equals(obj);
-        }
-
-        public override int GetHashCode() {
-            return BaseRecord?.GetHashCode() ?? 0;
-        }
-
-        public virtual int CompareTo(object obj) {
-            PlayerHeldItem item = obj as PlayerHeldItem;
-
-            if (item != null) {
-                if (Name != null && item.Name != null) {
-                    return Name.CompareTo(item.Name);
-                }
-                return Id.CompareTo(item.Id);
-            }
-
-            return 0;
-        }
     }
 }

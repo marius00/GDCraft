@@ -14,7 +14,6 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
         private readonly IItemTagDao _itemTagDao;
         private readonly IDatabaseItemDao _databaseItemDao;
         private readonly IDatabaseItemStatDao _databaseItemStatDao;
-        private readonly IItemSkillDao _itemSkillDao;
         private readonly string _localizationFile;
 
 
@@ -23,14 +22,12 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
             string grimdawnLocation, 
             IDatabaseItemDao databaseItemDao, 
             IDatabaseItemStatDao databaseItemStatDao, 
-            IItemSkillDao itemSkillDao, 
             string localizationFile
         ) {
             _itemTagDao = itemTagDao;
             _grimdawnLocation = grimdawnLocation;
             _databaseItemDao = databaseItemDao;
             _databaseItemStatDao = databaseItemStatDao;
-            _itemSkillDao = itemSkillDao;
             _localizationFile = localizationFile;
         }
 
@@ -61,20 +58,6 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
 
             actions.Add(() => _databaseItemDao.Save(parser.Items, new WinformsProgressBar(form.SavingItems).Tracker));
 
-
-            actions.Add(() => {
-                var records = parser.GenerateSpecialRecords(new WinformsProgressBar(form.GeneratingSpecialStats).Tracker);
-                _databaseItemStatDao.Save(records, new WinformsProgressBar(form.SavingSpecialStats).Tracker);
-            });
-
-
-            actions.Add(() => parser.ParseComplexItems(_itemSkillDao, new WinformsProgressBar(form.GeneratingSkills).Tracker));
-            actions.Add(() => {
-                var tracker = new WinformsProgressBar(form.SkillCorrectnessCheck).Tracker;
-                tracker.MaxValue = 1;
-                _itemSkillDao.EnsureCorrectSkillRecords();
-                tracker.Finalize();
-            });
 
             // Invoke the background thread & show progress UI
             Thread t = new Thread(() => {

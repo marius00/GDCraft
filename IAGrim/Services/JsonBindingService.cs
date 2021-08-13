@@ -31,7 +31,7 @@ namespace IAGrim.Services {
             _costCalculationService = costCalculationService;
 
             // 
-            ItemHtmlWriter.ToJsonSerializeable(new List<PlayerHeldItem>());
+            ItemHtmlWriter.ToJsonSerializeable();
 
             // Return the ingredients for a given recipe
             jsBind.OnRequestRecipeIngredients += (sender, args) => {
