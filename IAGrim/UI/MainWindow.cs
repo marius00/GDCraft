@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using AutoUpdaterDotNET;
 using EvilsoftCommons;
 using EvilsoftCommons.Exceptions;
 using IAGrim.Database.Interfaces;
@@ -17,7 +13,6 @@ using IAGrim.Parsers;
 using IAGrim.Parsers.Arz;
 using IAGrim.Parsers.Arz.dto;
 using IAGrim.Parsers.GameDataParsing.Service;
-using IAGrim.Properties;
 using IAGrim.Services;
 using IAGrim.Services.Crafting;
 using IAGrim.UI.Controller;
@@ -32,7 +27,7 @@ using Timer = System.Timers.Timer;
 namespace IAGrim.UI {
 
     public partial class MainWindow : Form {
-        public readonly JSWrapper JsBind = new JSWrapper { IsTimeToShowNag = -1 };
+        public readonly JSWrapper JsBind = new JSWrapper();
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
         readonly CefBrowserHandler _cefBrowserHandler;
 
@@ -361,15 +356,6 @@ namespace IAGrim.UI {
             _cefBrowserHandler.ShowDevTools();
         }
 
-        private void SetItemsClipboard(object ignored, EventArgs _args) {
-            if (InvokeRequired) {
-                Invoke((MethodInvoker)delegate { SetItemsClipboard(ignored, _args); });
-            } else {
-                ClipboardEventArg args = _args as ClipboardEventArg;
-                if (args != null) Clipboard.SetText(args.Text);
-                _tooltipHelper.ShowTooltipAtMouse(GlobalSettings.Language.GetTag("iatag_copied_clipboard"), _cefBrowserHandler.BrowserControl);
-            }
-        }
 
     } // CLASS
 

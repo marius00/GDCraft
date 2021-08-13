@@ -107,10 +107,8 @@
         }
     }
 
-    function _VM(items, message, language) {
+    function _VM(language) {
         var self = this;
-        this.Items = ko.observableArray(items);
-        this.Message = ko.observable(message);
 
         this.hasClosedMagicSequence = ko.observable(false);
 
@@ -151,7 +149,7 @@
 
 
 
-    var VM = new _VM(JSON.parse(data.Items), data.Message, data.translation);
+    var VM = new _VM(data.translation);
 
     function isLoading(v) {
         if (v)

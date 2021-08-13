@@ -21,6 +21,7 @@ namespace IAGrim.UI.Misc {
                 Callback = callback
             });
         }
+
         public void requestRecipeList(string callback) {
             OnRequestRecipeList?.Invoke(this, new RequestRecipeArgument {
                 Callback = callback
@@ -28,7 +29,6 @@ namespace IAGrim.UI.Misc {
         }
 
         public JSWrapper() {
-
             _settings = new JsonSerializerSettings {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 Culture = System.Globalization.CultureInfo.InvariantCulture,
@@ -72,51 +72,12 @@ namespace IAGrim.UI.Misc {
             return JsonConvert.SerializeObject(o, _settings);
         }
 
-
-        public void UpdateItems(List<JsonItem> items) {
-            this.Items = JsonConvert.SerializeObject(items, _settings);
-        }
-
-
-        public void SetClipboard(string data) {
-            if (!string.IsNullOrWhiteSpace(data)) {
-                if (OnClipboard != null)
-                    OnClipboard(this, new ClipboardEventArg { Text = data });
-            }
-        }
-
         public HtmlTranslation translation { get; private set; }
-
-        public string Items { get; set; }
-        public bool ItemSourceExhausted { get; set; }
-
-        public int IsTimeToShowNag { get; set; }
-
-        public event EventHandler OnTransfer;
-        public event EventHandler OnClipboard;
-        public event EventHandler OnRequestItems;
-
-        public void RequestMoreItems() {
-            OnRequestItems?.Invoke(this, null);
-        }
-
-        public void TransferAll(object[] id) {
-            OnTransfer?.Invoke(this, new StashTransferEventArgs { InternalId = id, Count = int.MaxValue });
-        }
-
-        public void TransferItem(object[] id) {
-            OnTransfer?.Invoke(this, new StashTransferEventArgs { InternalId = id, Count = 1 });
-        }
 
 
         public void OpenURL(string url) {
             System.Diagnostics.Process.Start(url);
         }
 
-        public string Message {
-            get {
-                return string.Empty;
-            }
-        }
     }
 }

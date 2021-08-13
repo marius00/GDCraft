@@ -45,9 +45,6 @@ namespace IAGrim.Utilities {
                 type = 2;
 
 
-
-
-
             var json = new JsonItem {
                 BaseRecord = item.BaseRecord,
                 URL = id,
@@ -100,21 +97,6 @@ namespace IAGrim.Utilities {
                 File.Copy(newPath, newPath.Replace(appResFolder, GlobalPaths.StorageFolder), true);
             }
 
-            /*
-            foreach (var pattern in new string[] { "*.css", "*.js" }) {
-                foreach (var file in Directory.GetFiles(appResFolder, pattern)) {
-                    FileInfo fileInfo = new FileInfo(file);
-
-                    var target = Path.Combine(GlobalPaths.StorageFolder, fileInfo.Name);
-                    //if (!File.Exists(target))
-                    File.Copy(file, target, true);
-                }
-            }
-
-            var recipeFileSrc = Path.Combine(appResFolder, "recipe.png");
-            var recipeFileDst = Path.Combine(GlobalPaths.StorageFolder, "recipe.png");
-            if (!File.Exists(recipeFileDst))
-                File.Copy(recipeFileSrc, recipeFileDst);*/
         }
 
         public static List<JsonItem> ToJsonSerializeable(List<PlayerHeldItem> items) {

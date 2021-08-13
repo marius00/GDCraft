@@ -270,8 +270,6 @@
     <Compile Include="Services\Crafting\dto\ComponentListEntry.cs" />
     <Compile Include="Services\Crafting\RecipeService.cs" />
     <Compile Include="Services\Dto\DBSTatRow.cs" />
-    <Compile Include="Services\ItemPaginatorService.cs" />
-    <Compile Include="Services\ItemStatService.cs" />
     <Compile Include="Services\JsonBindingService.cs" />
     <Compile Include="Theme\ComboBoxItem.cs" />
     <Compile Include="Theme\ComboBoxItemQuality.cs" />
@@ -311,11 +309,8 @@
       <DependentUpon>LanguagePackPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Misc\CefBrowserHandler.cs" />
-    <Compile Include="UI\Misc\ClipboardEventArg.cs" />
     <Compile Include="UI\Misc\JSWrapper.cs" />
-    <Compile Include="UI\Misc\MessageType.cs" />
     <Compile Include="UI\Misc\MousewheelMessageFilter.cs" />
-    <Compile Include="UI\Misc\StashTransferEventArgs.cs" />
     <Compile Include="UI\Tabs\ModsDatabaseConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -336,8 +331,6 @@
     <Compile Include="UI\Popups\UpdatingPlayerItemsScreen.Designer.cs">
       <DependentUpon>UpdatingPlayerItemsScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\ActionCooldown.cs" />
-    <Compile Include="Utilities\CallerMemberNameAttribute.cs" />
     <Compile Include="Utilities\DependencyChecker.cs" />
     <Compile Include="Utilities\GlobalPaths.cs" />
     <Compile Include="Utilities\GlobalSettings.cs" />
