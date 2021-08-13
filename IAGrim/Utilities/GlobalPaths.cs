@@ -137,7 +137,7 @@ namespace IAGrim.Utilities {
 
         public static string CoreFolder {
             get {
-                string path = Path.Combine(LocalAppdata, "EvilSoft", "IAGD");
+                string path = Path.Combine(LocalAppdata, "EvilSoft", "GDCraft");
                 Directory.CreateDirectory(path);
 
                 return path;
@@ -146,14 +146,14 @@ namespace IAGrim.Utilities {
 
         public static string USERDATA_FILE_FIXED {
             get {
-                return "userdata.db";
+                return "crafting.db";
             }
         }
 
 #if DEBUG
         public static string USERDATA_FILE {
             get {
-                return "userdata-test.db";
+                return "crafting-test.db";
             }
         }
 #else

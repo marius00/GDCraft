@@ -16,9 +16,12 @@ namespace IAGrim.UI.Misc {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(CefBrowserHandler));
         private ChromiumWebBrowser _browser;
 
-        public Control BrowserControl {
+        public ChromiumWebBrowser BrowserControl {
             get {
                 return _browser;
+            }
+            set {
+                _browser = value;
             }
         }
 
@@ -85,45 +88,38 @@ namespace IAGrim.UI.Misc {
             }
         }
 
-        public void InitializeChromium(object bindeable, EventHandler<IsBrowserInitializedChangedEventArgs> Browser_IsBrowserInitializedChanged) {
+        public void InitializeChromium(object bindable) {
             try {
                 Logger.Info("Creating Chromium instance..");
+
+                // Useful: https://github.com/cefsharp/CefSharp/blob/cefsharp/79/CefSharp.Example/CefExample.cs#L208
                 Cef.EnableHighDPISupport();
 
-                //var settings = new CefSettings();
-                //settings.CefCommandLineArgs.Add("disable-gpu", "1");
-                if (!Cef.Initialize()) {
-                    Logger.Fatal("Could not initialize Chromium");
-                    MessageBox.Show("Fatal error - Could not initialize chromium", "Fatal error", MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
 
-                try {
-                    string src = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "item-kjs.html");
-                    File.Copy(src, GlobalPaths.ItemsHtmlFile, true);
-                } catch (Exception ex) {
-                    // Probably doesn't matter, only relevant if its been updated
-                    Logger.Warn(ex.Message);
-                    Logger.Warn(ex.StackTrace);
-                }
+                // TODO: Read and analyze https://github.com/cefsharp/CefSharp/issues/2246 -- Is this the correct way to do things in the future?
+                CefSharpSettings.WcfEnabled = true;
+                BrowserControl = new ChromiumWebBrowser(GlobalPaths.ItemsHtmlFile) {Visible = true};
 
-                _browser = new ChromiumWebBrowser(GlobalPaths.ItemsHtmlFile);
-                _browser.RegisterJsObject("data", bindeable, false);
-                _browser.IsBrowserInitializedChanged += Browser_IsBrowserInitializedChanged;
+                // TODO: browser.JavascriptObjectRepository.ObjectBoundInJavascript += (sender, e) =>
+                BrowserControl.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
+                BrowserControl.JavascriptObjectRepository.Register("data", bindable, isAsync: false, options: BindingOptions.DefaultBinder);
 
-                //browser.RequestHandler = new TransferUrlHijack { TransferMethod = transferItem };
+
                 Logger.Info("Chromium created..");
-            } catch (System.IO.FileNotFoundException ex) {
+            }
+            catch (System.IO.FileNotFoundException ex) {
                 MessageBox.Show("Error \"File Not Found\" loading Chromium, did you forget to install Visual C++ runtimes?\n\nvc_redist86 in the IA folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Logger.Warn(ex.Message);
                 Logger.Warn(ex.StackTrace);
                 throw;
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 MessageBox.Show("Error loading Chromium, did you forget to install Visual C++ runtimes?\n\nvc_redist86 in the IA folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Logger.Warn(ex.Message);
                 Logger.Warn(ex.StackTrace);
                 throw;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 MessageBox.Show("Unknown error loading Chromium, please see log file for more information.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Logger.Warn(ex.Message);
                 Logger.Warn(ex.StackTrace);

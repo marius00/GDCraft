@@ -36,12 +36,6 @@
             this.settingsPanel = new System.Windows.Forms.Panel();
             this.tabPageMods = new System.Windows.Forms.TabPage();
             this.modsPanel = new System.Windows.Forms.Panel();
-            this.tabPageBackups = new System.Windows.Forms.TabPage();
-            this.backupPanel = new System.Windows.Forms.Panel();
-            this.tabPageBuddy = new System.Windows.Forms.TabPage();
-            this.buddyPanel = new System.Windows.Forms.Panel();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.panelLogging = new System.Windows.Forms.Panel();
             this.tabPageHelp = new System.Windows.Forms.TabPage();
             this.panelHelp = new System.Windows.Forms.Panel();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -53,9 +47,6 @@
             this.searchPanel.SuspendLayout();
             this.tabPageSettings.SuspendLayout();
             this.tabPageMods.SuspendLayout();
-            this.tabPageBackups.SuspendLayout();
-            this.tabPageBuddy.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.tabPageHelp.SuspendLayout();
             this.trayContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -95,9 +86,6 @@
             this.tabControl1.Controls.Add(this.tabPageItems);
             this.tabControl1.Controls.Add(this.tabPageSettings);
             this.tabControl1.Controls.Add(this.tabPageMods);
-            this.tabControl1.Controls.Add(this.tabPageBackups);
-            this.tabControl1.Controls.Add(this.tabPageBuddy);
-            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPageHelp);
             this.tabControl1.Location = new System.Drawing.Point(0, 1);
             this.tabControl1.Name = "tabControl1";
@@ -126,13 +114,13 @@
             this.searchPanel.Controls.Add(this.buttonDevTools);
             this.searchPanel.Location = new System.Drawing.Point(-4, 0);
             this.searchPanel.Name = "searchPanel";
-            this.searchPanel.Size = new System.Drawing.Size(937, 560);
+            this.searchPanel.Size = new System.Drawing.Size(933, 560);
             this.searchPanel.TabIndex = 1;
             // 
             // buttonDevTools
             // 
             this.buttonDevTools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDevTools.Location = new System.Drawing.Point(862, 0);
+            this.buttonDevTools.Location = new System.Drawing.Point(858, 0);
             this.buttonDevTools.Name = "buttonDevTools";
             this.buttonDevTools.Size = new System.Drawing.Size(75, 23);
             this.buttonDevTools.TabIndex = 0;
@@ -185,72 +173,6 @@
             this.modsPanel.Size = new System.Drawing.Size(937, 557);
             this.modsPanel.TabIndex = 1;
             // 
-            // tabPageBackups
-            // 
-            this.tabPageBackups.Controls.Add(this.backupPanel);
-            this.tabPageBackups.Location = new System.Drawing.Point(4, 22);
-            this.tabPageBackups.Name = "tabPageBackups";
-            this.tabPageBackups.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageBackups.Size = new System.Drawing.Size(929, 560);
-            this.tabPageBackups.TabIndex = 3;
-            this.tabPageBackups.Tag = "iatag_ui_tab_backups";
-            this.tabPageBackups.Text = "Backups";
-            this.tabPageBackups.UseVisualStyleBackColor = true;
-            // 
-            // backupPanel
-            // 
-            this.backupPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.backupPanel.Location = new System.Drawing.Point(-4, 0);
-            this.backupPanel.Name = "backupPanel";
-            this.backupPanel.Size = new System.Drawing.Size(933, 560);
-            this.backupPanel.TabIndex = 0;
-            // 
-            // tabPageBuddy
-            // 
-            this.tabPageBuddy.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPageBuddy.Controls.Add(this.buddyPanel);
-            this.tabPageBuddy.Location = new System.Drawing.Point(4, 22);
-            this.tabPageBuddy.Name = "tabPageBuddy";
-            this.tabPageBuddy.Size = new System.Drawing.Size(929, 560);
-            this.tabPageBuddy.TabIndex = 2;
-            this.tabPageBuddy.Tag = "iatag_ui_tab_buddy";
-            this.tabPageBuddy.Text = "Buddy";
-            // 
-            // buddyPanel
-            // 
-            this.buddyPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buddyPanel.Location = new System.Drawing.Point(-4, 0);
-            this.buddyPanel.Name = "buddyPanel";
-            this.buddyPanel.Size = new System.Drawing.Size(933, 564);
-            this.buddyPanel.TabIndex = 0;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.panelLogging);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(929, 560);
-            this.tabPage1.TabIndex = 6;
-            this.tabPage1.Tag = "iatag_ui_tab_log";
-            this.tabPage1.Text = "Log";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // panelLogging
-            // 
-            this.panelLogging.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelLogging.ForeColor = System.Drawing.SystemColors.Control;
-            this.panelLogging.Location = new System.Drawing.Point(-4, 0);
-            this.panelLogging.Name = "panelLogging";
-            this.panelLogging.Size = new System.Drawing.Size(933, 564);
-            this.panelLogging.TabIndex = 1;
-            // 
             // tabPageHelp
             // 
             this.tabPageHelp.Controls.Add(this.panelHelp);
@@ -286,13 +208,13 @@
             this.trayContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.trayContextMenuStrip.Name = "trayContextMenuStrip";
-            this.trayContextMenuStrip.Size = new System.Drawing.Size(93, 26);
+            this.trayContextMenuStrip.Size = new System.Drawing.Size(94, 26);
             this.trayContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.trayContextMenuStrip_Opening);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -315,9 +237,6 @@
             this.searchPanel.ResumeLayout(false);
             this.tabPageSettings.ResumeLayout(false);
             this.tabPageMods.ResumeLayout(false);
-            this.tabPageBackups.ResumeLayout(false);
-            this.tabPageBuddy.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
             this.tabPageHelp.ResumeLayout(false);
             this.trayContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -334,20 +253,14 @@
         private System.Windows.Forms.TabPage tabPageItems;
         private System.Windows.Forms.TabPage tabPageSettings;
         private System.Windows.Forms.Panel settingsPanel;
-        private System.Windows.Forms.TabPage tabPageBuddy;
-        private System.Windows.Forms.Panel buddyPanel;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip trayContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.TabPage tabPageBackups;
-        private System.Windows.Forms.Panel backupPanel;
         private System.Windows.Forms.TabPage tabPageMods;
         private System.Windows.Forms.Panel modsPanel;
         private System.Windows.Forms.Panel searchPanel;
         private System.Windows.Forms.Button buttonDevTools;
         private System.Windows.Forms.TabPage tabPageHelp;
         private System.Windows.Forms.Panel panelHelp;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Panel panelLogging;
     }
 }

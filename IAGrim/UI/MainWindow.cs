@@ -65,7 +65,6 @@ namespace IAGrim.UI {
         private readonly DynamicPacker _dynamicPacker;
         private readonly List<IMessageProcessor> _messageProcessors = new List<IMessageProcessor>();
 
-        private SearchWindow _searchWindow;
         private StashManager _stashManager;
         private BuddySettings _buddySettingsWindow;
         private StashFileMonitor _stashFileMonitor = new StashFileMonitor();
@@ -132,21 +131,7 @@ namespace IAGrim.UI {
         [DllImport("kernel32")]
         private static extern UInt64 GetTickCount64();
 
-        /// <summary>
-        /// Perform a search the moment were initialized
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Browser_IsBrowserInitializedChanged(object sender, IsBrowserInitializedChangedEventArgs e) {
-            if (e.IsBrowserInitialized) {
 
-                if (InvokeRequired) {
-                    Invoke((MethodInvoker)delegate { _searchWindow?.UpdateListviewDelayed(); });
-                } else {
-                    _searchWindow?.UpdateListviewDelayed();
-                }
-            }
-        }
 
         public MainWindow(
             CefBrowserHandler browser,
@@ -263,92 +248,6 @@ namespace IAGrim.UI {
         }
 
 
-        /// <summary>
-        /// Callback called when the Grim Dawn hook sends messages to IA
-        /// </summary>
-        /// <returns></returns>
-        private void CustomWndProc(RegisterWindow.DataAndType bt) {
-            // Most if not all actions may interact with SQL
-            // SQL is done on the UI thread.
-            if (InvokeRequired) {
-                Invoke((MethodInvoker)delegate { CustomWndProc(bt); });
-                return;
-            }
-
-
-            MessageType type = (MessageType)bt.Type;
-            
-            foreach (IMessageProcessor t in _messageProcessors) {
-                t.Process(type, bt.Data);
-            }
-
-            if (!GlobalSettings.GrimDawnRunning) {
-                Logger.Debug("GrimDawnRunning flag has been changed from false to true");
-                GlobalSettings.GrimDawnRunning = true; // V1.0.4.0 hotfix   
-            }
-
-            int offset;
-            switch (type) {
-                case MessageType.TYPE_DetectedStashToLootFrom: {
-                    int stashToLootFrom = IOHelper.GetInt(bt.Data, 0);
-                        Logger.Info($"Grim Dawn hook reports it will be looting from stash tab: {stashToLootFrom}");
-                    }
-                break;
-
-                case MessageType.TYPE_REPORT_WORKER_THREAD_LAUNCHED:
-                    offset = IOHelper.GetInt(bt.Data, 0);
-                    Logger.Info($"Grim Dawn hook reports successful launch, offset: {offset}");
-                    break;
-
-                case MessageType.TYPE_REPORT_WORKER_THREAD_EXPERIMENTAL_LAUNCHED:
-                    offset = IOHelper.GetInt(bt.Data, 0);
-                    Logger.Info($"Grim Dawn exp-hook reports successful launch, offset: {offset}");
-                    break;
-
-
-
-                case MessageType.TYPE_GameInfo_IsHardcore:
-                case MessageType.TYPE_GameInfo_IsHardcore_via_init:
-                    Logger.Info($"TYPE_GameInfo_IsHardcore({bt.Data[0] > 0}, {type})");
-                    if (_settingsController.AutoUpdateModSettings) {
-                        _searchWindow.ModSelectionHandler.UpdateModSelection(bt.Data[0] > 0);
-                    }
-
-                    break;
-
-                case MessageType.TYPE_GameInfo_IsHardcore_via_init_2:
-                    Logger.Debug("GameInfo object created");
-                    break;
-
-                case MessageType.TYPE_GameInfo_SetModName:
-                    Logger.InfoFormat("TYPE_GameInfo_SetModName({0})", IOHelper.GetPrefixString(bt.Data, 0));
-                    if (_settingsController.AutoUpdateModSettings) {
-                        _searchWindow.ModSelectionHandler.UpdateModSelection(IOHelper.GetPrefixString(bt.Data, 0));
-                    }
-                    break;
-
-            }
-
-            if (bt.Type == 1011) {
-                Logger.Debug("dll_GameInfo_SetModNameWideString");
-                
-            }
-            else if (bt.Type == 1010) {
-                Logger.Debug($"Hooked_GameInfo_SetModName {IOHelper.GetPrefixString(bt.Data, 0)}");
-            }
-
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
-            if (keyData == Keys.Escape) {
-                _searchWindow.ClearFilters();
-                return true;    // indicate that you handled this keystroke
-            }
-
-            // Call the base class
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
         private void SetFeedback(string feedback) {
             try {
                 if (InvokeRequired) {
@@ -402,21 +301,6 @@ namespace IAGrim.UI {
             }
         }
 
-        /// <summary>
-        /// We've looted some items, so make sure the listview is up to date!
-        /// Otherwise people freak out.
-        ///
-        /// The first ~1700 users did not notice at all, but past that seems its the end of days if items don't appear immediately.
-        /// </summary>
-        private void ListviewUpdateTrigger() {
-            _searchWindow?.UpdateListviewDelayed();
-        }
-
-        private void DatabaseLoadedTrigger() {
-            _searchWindow.UpdateInterface();
-            _searchWindow?.UpdateListviewDelayed(); 
-        }
-
 
 
         private void MainWindow_Load(object sender, EventArgs e) {
@@ -429,7 +313,7 @@ namespace IAGrim.UI {
 
             buttonDevTools.Visible = Debugger.IsAttached;
 
-            _stashManager = new StashManager(_playerItemDao, _databaseItemStatDao, SetFeedback, ListviewUpdateTrigger);
+            _stashManager = new StashManager(_playerItemDao, _databaseItemStatDao, SetFeedback, () => { });
             _stashFileMonitor.OnStashModified += (_, __) => {
                 StashEventArg args = __ as StashEventArg;
                 if (_stashManager.TryLootStashFile(args?.Filename)) {
@@ -457,10 +341,10 @@ namespace IAGrim.UI {
                 _buddyItemDao,
                 _stashManager
                 );
-            _cefBrowserHandler.InitializeChromium(searchController.JsBind, Browser_IsBrowserInitializedChanged);
+            _cefBrowserHandler.InitializeChromium(searchController.JsBind);
             searchController.Browser = _cefBrowserHandler;
-            searchController.JsBind.OnTransfer += TransferItem;
-            searchController.JsBind.OnClipboard += SetItemsClipboard;
+            searchPanel.Controls.Add(_cefBrowserHandler.BrowserControl);
+
 
             // Load the grim database
             string gdPath = GrimDawnDetector.GetGrimLocation();
@@ -493,33 +377,26 @@ namespace IAGrim.UI {
                 _buddySubscriptionDao
                 );
 
-            addAndShow(_buddySettingsWindow, buddyPanel);
 
             var backupSettings = new BackupSettings(EnableOnlineBackups, _playerItemDao);
             tabControl1.Selected += ((s, ev) => {
-                if (ev.TabPage == tabPageBackups)
-                    backupSettings?.BackupSettings_GotFocus();
+
             });
-            addAndShow(backupSettings, backupPanel);
-            addAndShow(new ModsDatabaseConfig(DatabaseLoadedTrigger, _databaseSettingDao, _arzParser, _playerItemDao, _parsingService), modsPanel);
+            addAndShow(new ModsDatabaseConfig(() => { }, _databaseSettingDao, _arzParser, _playerItemDao, _parsingService), modsPanel);
             addAndShow(new HelpTab(), panelHelp);            
-            addAndShow(new LoggingWindow(), panelLogging);
 
-
-            _searchWindow = new SearchWindow(_cefBrowserHandler.BrowserControl, SetFeedback, _playerItemDao, searchController, _itemTagDao);
-            addAndShow(_searchWindow, searchPanel);
 
 
             addAndShow(
                 new SettingsWindow(
                     _itemTagDao,
                     _tooltipHelper,
-                    ListviewUpdateTrigger,
+                    () => { },
                     _databaseSettingDao,
                     _databaseItemDao,
                     _playerItemDao,
                     _arzParser,
-                    _searchWindow.ModSelectionHandler.GetAvailableModSelection(),
+                    new GDTransferFile[]{},
                     _stashManager,
                     _parsingService
                 ),
@@ -547,7 +424,6 @@ namespace IAGrim.UI {
             _timerReportUsage.Start();
 
 
-            Shown += (_, __) => { StartInjector(); };
 
             //settingsController.Data.budd
             BuddySyncEnabled = (bool)Settings.Default.BuddySyncEnabled;
@@ -590,29 +466,11 @@ namespace IAGrim.UI {
             _messageProcessors.Add(new ItemPositionFinder(_dynamicPacker));
             _messageProcessors.Add(new PlayerPositionTracker());
             _messageProcessors.Add(new StashStatusHandler());
-            _messageProcessors.Add(new ItemReceivedProcessor(_searchWindow, _stashFileMonitor, _playerItemDao));
-            _messageProcessors.Add(new ItemInjectCallbackProcessor(_searchWindow.UpdateListviewDelayed, _playerItemDao));
-            _messageProcessors.Add(new ItemSpawnedProcessor());
-            _messageProcessors.Add(new CloudDetectorProcessor(SetFeedback));
-            _messageProcessors.Add(new GenericErrorHandler());
-            //messageProcessors.Add(new LogMessageProcessor());
-#if DEBUG
-            //messageProcessors.Add(new DebugMessageProcessor());
-#endif
+            
 
             GlobalSettings.StashStatusChanged += GlobalSettings_StashStatusChanged;
 
-            _transferController = new ItemTransferController(
-                _cefBrowserHandler, 
-                SetFeedback, 
-                SetTooltipAtmouse, 
-                _settingsController, 
-                _searchWindow, 
-                _dynamicPacker,
-                _playerItemDao,
-                _stashManager,
-                new ItemStatService(_databaseItemStatDao, _itemSkillDao)
-                );
+
             Application.AddMessageFilter(new MousewheelMessageFilter());
 
 
@@ -622,54 +480,12 @@ namespace IAGrim.UI {
             }
 
 
-
-            if (BackupNagScreen.ShouldNag) {
-                var b = new BackupNagScreen();
-                b.ShowDialog();
-                if (b.UserWantsBackups)
-                    tabControl1.SelectedTab = tabPageBackups;
-            }
-
             var titleTag = GlobalSettings.Language.GetTag("iatag_ui_itemassistant");
             if (!string.IsNullOrEmpty(titleTag)) {
                 this.Text += $" - {titleTag}";
             }
         }
 
-        private void StartInjector() {
-            
-
-            // Start looking for GD processes!
-            _registerWindowDelegate = CustomWndProc;
-            _window = new RegisterWindow("GDIAWindowClass", _registerWindowDelegate);
-
-            // This prevents a implicit cast to new ProgressChangedEventHandler(func), which would hit the GC and before being used from another thread
-            // Same happens when shutting down, fix unknown
-            _injectorCallbackDelegate = InjectorCallback;
-
-            var hasMods = _searchWindow.ModSelectionHandler.HasMods;
-#if DEBUG
-            hasMods = false; // TODO TODO TODO TODO
-#endif
-            // CBA dealing with this.
-            InstalootSettingType instaloot = (InstalootSettingType)Properties.Settings.Default.InstalootSetting;
-            string dllname = (!hasMods && instaloot == InstalootSettingType.Enabled) ? "ItemAssistantHook-exp.dll" : "ItemAssistantHook.dll";
-            Logger.Debug($"Using {dllname} as the default hook due to HasMods: {hasMods}, Instaloot setting: {instaloot}");
-
-            _injector = new InjectionHelper(new BackgroundWorker(), _injectorCallbackDelegate, false, "Grim Dawn", string.Empty, dllname);
-        }
-
-        void TransferItem(object ignored, EventArgs args) {
-
-            if (InvokeRequired) {
-                Invoke((MethodInvoker)delegate {
-                    _transferController.TransferItem(ignored, args);
-                });
-            }
-            else {
-                _transferController.TransferItem(ignored, args);
-            }
-        }
 
         private void GlobalSettings_StashStatusChanged(object sender, EventArgs e) {
 
@@ -727,12 +543,6 @@ namespace IAGrim.UI {
                     } else /*if (this.WindowState == FormWindowState.Normal)*/ {
                         notifyIcon1.Visible = false;
                         _previousWindowState = WindowState;
-                        if (BackupNagScreen.ShouldNag) {
-                            var b = new BackupNagScreen();
-                            b.ShowDialog();
-                            if (b.UserWantsBackups)
-                                tabControl1.SelectedTab = tabPageBackups;
-                        }
                     }
                 }
             } catch (Exception ex) {

@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.props')" />
-  <Import Project="..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.props')" />
+  <Import Project="..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props')" />
+  <Import Project="..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props')" />
+  <Import Project="..\packages\cef.redist.x64.91.1.23\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.91.1.23\build\cef.redist.x64.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -88,6 +89,15 @@
     <Reference Include="AutoUpdater.NET, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Auto updater\AutoUpdater.NET\bin\Release\AutoUpdater.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp, Version=91.1.230.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.Common.91.1.230\lib\net452\CefSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.Core, Version=91.1.230.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.Common.91.1.230\lib\net452\CefSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.WinForms, Version=91.1.230.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.WinForms.91.1.230\lib\net452\CefSharp.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Gameloop.Vdf, Version=0.4.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gameloop.Vdf.0.4.3\lib\net45\Gameloop.Vdf.dll</HintPath>
@@ -286,7 +296,6 @@
     <Compile Include="Services\MessageProcessor\ItemInjectCallbackProcessor.cs" />
     <Compile Include="Services\MessageProcessor\ItemSpawnedProcessor.cs" />
     <Compile Include="Services\MessageProcessor\ItemPositionFinder.cs" />
-    <Compile Include="Services\MessageProcessor\ItemReceivedProcessor.cs" />
     <Compile Include="Services\MessageProcessor\PlayerPositionTracker.cs" />
     <Compile Include="Services\MessageProcessor\StashStatusHandler.cs" />
     <Compile Include="Theme\ComboBoxItem.cs" />
@@ -306,12 +315,6 @@
     <Compile Include="UI\Misc\RequestRecipeArgument.cs" />
     <Compile Include="UI\Misc\TextboxHoverFocusHighlight.cs" />
     <Compile Include="UI\Model\ListViewEntry.cs" />
-    <Compile Include="UI\Popups\BackupNagScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\BackupNagScreen.Designer.cs">
-      <DependentUpon>BackupNagScreen.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Popups\ImportExport\ImportExportContainer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -370,12 +373,6 @@
     <Compile Include="UI\Controller\SearchController.cs" />
     <Compile Include="UI\Controller\SettingsController.cs" />
     <Compile Include="UI\Controller\JsonItem.cs" />
-    <Compile Include="UI\DesiredSkills.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\DesiredSkills.Designer.cs">
-      <DependentUpon>DesiredSkills.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Popups\DonateNagScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -412,12 +409,6 @@
     <Compile Include="UI\Tabs\ModsDatabaseConfig.Designer.cs">
       <DependentUpon>ModsDatabaseConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Tabs\SearchWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Tabs\SearchWindow.Designer.cs">
-      <DependentUpon>SearchWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Tabs\SettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -440,7 +431,6 @@
     </Compile>
     <Compile Include="Utilities\ActionCooldown.cs" />
     <Compile Include="Utilities\CallerMemberNameAttribute.cs" />
-    <Compile Include="Utilities\ChromiumUrlHook.cs" />
     <Compile Include="Utilities\Cloud\CloudBackup.cs" />
     <Compile Include="Utilities\DependencyChecker.cs" />
     <Compile Include="Utilities\EasterEgg.cs" />
@@ -506,9 +496,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\BackupNagScreen.resx">
-      <DependentUpon>BackupNagScreen.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Popups\ImportExport\ImportExportContainer.resx">
       <DependentUpon>ImportExportContainer.cs</DependentUpon>
     </EmbeddedResource>
@@ -533,9 +520,6 @@
     <EmbeddedResource Include="UI\Tabs\BuddySettings.resx">
       <DependentUpon>BuddySettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\DesiredSkills.resx">
-      <DependentUpon>DesiredSkills.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Popups\DonateNagScreen.resx">
       <DependentUpon>DonateNagScreen.cs</DependentUpon>
     </EmbeddedResource>
@@ -553,9 +537,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Tabs\ModsDatabaseConfig.resx">
       <DependentUpon>ModsDatabaseConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Tabs\SearchWindow.resx">
-      <DependentUpon>SearchWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Tabs\SettingsWindow.resx">
       <DependentUpon>SettingsWindow.cs</DependentUpon>
@@ -798,24 +779,19 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>xcopy /Y "$(SolutionDir)iagrim\Listdlls.exe" "$(TargetDir)"</PreBuildEvent>
+  </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.3.2704.1432\build\cef.redist.x64.targets'))" />
-    <Error Condition="!Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.targets'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.props'))" />
-    <Error Condition="!Exists('..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.targets'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x64.91.1.23\build\cef.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.91.1.23\build\cef.redist.x64.props'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets'))" />
   </Target>
-  <Import Project="..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2704.1432\build\cef.redist.x86.targets')" />
-  <Import Project="..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.51.0.0\build\CefSharp.Common.targets')" />
-  <Import Project="..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.targets" Condition="Exists('..\packages\CefSharp.WinForms.51.0.0\build\CefSharp.WinForms.targets')" />
-  <PropertyGroup>
-    <PreBuildEvent>xcopy /Y "$(SolutionDir)iagrim\Listdlls.exe" "$(TargetDir)"</PreBuildEvent>
-  </PropertyGroup>
+  <Import Project="..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

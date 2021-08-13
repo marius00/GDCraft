@@ -84,7 +84,7 @@ namespace IAGrim.Database {
         public static bool Migrate(ISessionCreator factory) {
             string[] files = {
                 Path.Combine(GlobalPaths.UserdataFolder, GlobalPaths.USERDATA_FILE),
-                Path.Combine(GlobalPaths.UserdataFolder, "userdata-hc.db")
+                Path.Combine(GlobalPaths.UserdataFolder, "crafting-hc.db")
             };
 
             foreach (var dbfile in files) {
