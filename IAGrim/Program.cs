@@ -2,7 +2,6 @@
 using EvilsoftCommons.SingleInstance;
 using IAGrim.Database;
 using IAGrim.Database.Interfaces;
-using IAGrim.Database.Migrations;
 using IAGrim.Database.Synchronizer;
 using IAGrim.Parsers.Arz;
 using IAGrim.UI;
@@ -212,7 +211,6 @@ namespace IAGrim {
             // Prohibited for now
             Properties.Settings.Default.InstaTransfer = false;
             Properties.Settings.Default.Save();
-            threadExecuter.Execute(() => new MigrationHandler(factory).Migrate());
             
             IDatabaseSettingDao databaseSettingDao = new DatabaseSettingRepo(threadExecuter, factory);
             LoadUuid(databaseSettingDao);

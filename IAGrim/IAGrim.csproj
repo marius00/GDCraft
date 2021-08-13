@@ -12,7 +12,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IAGrim</RootNamespace>
-    <AssemblyName>IAGrim</AssemblyName>
+    <AssemblyName>GDCraft</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -194,10 +194,6 @@
     <Compile Include="Database\Interfaces\IDatabaseSettingDao.cs" />
     <Compile Include="Database\Interfaces\IBaseDao.cs" />
     <Compile Include="Database\Interfaces\IItemTagDao.cs" />
-    <Compile Include="Database\Migrations\AddBuddyItemMigrations.cs" />
-    <Compile Include="Database\Migrations\AddSkillTables.cs" />
-    <Compile Include="Database\Migrations\IDatabaseMigration.cs" />
-    <Compile Include="Database\Migrations\MigrationHandler.cs" />
     <Compile Include="Database\Model\BaseItem.cs" />
     <Compile Include="Database\Model\DatabaseItemDto.cs" />
     <Compile Include="Database\Model\ItemSkill.cs" />

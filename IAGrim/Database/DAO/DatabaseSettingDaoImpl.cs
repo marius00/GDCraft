@@ -141,7 +141,7 @@ namespace IAGrim.Database {
 
 
                     if (result != null) {
-                        return (result as DatabaseSetting).V2;
+                        return (result as DatabaseSetting)?.V2;
                     }
                 }
             }

@@ -142,7 +142,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.Tag = "iatag_ui_itemassistant";
-            this.Text = "Grim Dawn Item Assistant";
+            this.Text = "GDCraft";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPageItems.ResumeLayout(false);
