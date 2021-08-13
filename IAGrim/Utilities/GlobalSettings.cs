@@ -18,41 +18,10 @@ namespace IAGrim.Utilities {
             }
         }
 
-        public static string RemoteBackupServer {
-            get {
-
-#if DEBUG
-                return "http://items.dreamcrash.org";
-                //return "http://localhost:53726";
-#else
-                return "http://items.dreamcrash.org";
-#endif
-            }
-        }
-
         public static string Uuid { get; set; }
 
 
-        public static event EventHandler StashStatusChanged;
-        private static StashAvailability _stashStatus = StashAvailability.UNKNOWN;
-        private static StashAvailability _previousStashStatus = StashAvailability.UNKNOWN;
 
-        public static StashAvailability PreviousStashStatus => _previousStashStatus;
-
-        public static bool GrimDawnRunning { get; set; } // V1.0.4.0 hotfix
-        public static StashAvailability StashStatus {
-            get {
-                return _stashStatus;
-            }
-            set {
-                if (_stashStatus != value) {
-                    _previousStashStatus = _stashStatus;
-                    _stashStatus = value;
-
-                    StashStatusChanged?.Invoke(null, null);
-                }
-            }
-        }
 
         private static ILocalizedLanguage _language;
         public static ILocalizedLanguage Language {

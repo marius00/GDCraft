@@ -16,6 +16,8 @@
 <link rel="stylesheet" type="text/css" href="vendor/bootstrap-chosen-master/chosen.min.css" />
 
 
+
+<div id="tab-crafting">
     
     <span id="componentAssemblerPage">&nbsp;</span>
     <div></div>
@@ -62,6 +64,7 @@
         </div>
     </div>
 
+</div>
 
 
 <style>
@@ -93,28 +96,8 @@
 </style>
 
 
+
 <script>
-    function openTab(evt, tabId) {
-        // Declare all variables
-        let i;
-
-        // Get all elements with class="tabcontent" and hide them
-        let tabcontent = document.getElementsByClassName('tabcontent');
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = 'none';
-        }
-
-        // Get all elements with class="tablinks" and remove the class "active"
-        let tablinks = document.getElementsByClassName('tablinks');
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(' active', '');
-        }
-
-        // Show the current tab, and add an "active" class to the button that opened the tab
-        document.getElementById(tabId).style.display = 'block';
-        evt.currentTarget.className += ' active';
-    }
-
     function TabControlViewModel(language) {
 
         for (let elem in language) {
@@ -179,8 +162,6 @@
         console.log("Loading: " + v);
     }
     $(document).ready(function () {
-        ko.applyBindings(VM, document.getElementById('tab-items'));
-        ko.applyBindings(new TabControlViewModel(data.translation), document.getElementById('tabcontrol'));
         ko.applyBindings(new TabControlViewModel(data.translation), document.getElementById('chosen-dropdown-controls'));
         isLoading(false);
 
@@ -193,7 +174,6 @@
             }
         };
 
-        openTab(event, 'tab-items');
     });
     function addData() {
         var items = JSON.parse(data.Items);
@@ -210,8 +190,6 @@
         console.log(`Got ${data.Items.length} new items`);
         VM.Items(JSON.parse(data.Items));
 
-        //console.log('Scrolling page to top');
-        //window.scrollTo(0, 0);
 
         if (VM.Items().length < 30 && !data.ItemSourceExhausted) {
             data.RequestMoreItems();
@@ -228,37 +206,7 @@
         isLoading(false);
     }
 
-    function showMessage(message, title, type) {
-        var stack_bar_bottom = { "dir1": "up", "dir2": "right", "spacing1": 0, "spacing2": 0 };
-        var timeout = (type == 'success') ? 1800 : 2600;
-        var tip = new PNotify({
-            opacity: 0.9,
-            title: title,
-            text: message,
-            animate_speed: 'fast',
-            animate: {
-                animate: true,
-                in_class: 'bounceInLeft',
-                out_class: 'fadeOut'
-            },
 
-            stack: stack_bar_bottom,
-            width: '70%',
-            addclass: "stack-bar-bottom",
-            cornerclass: '',
-            type: type,
-            delay: timeout
-        });
-
-    }
-
-    function mockCallback(args) {
-        console.log(args);
-    }
-    function jumpToCraft(record) {
-        updateView(record);
-        openTab(event, 'tab-crafting');
-    }
 </script>
 
 

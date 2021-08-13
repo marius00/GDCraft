@@ -12,26 +12,12 @@ using log4net;
 using NHibernate;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using DataAccess;
-using EvilsoftCommons;
 using EvilsoftCommons.Exceptions.UUIDGenerator;
-using Gameloop.Vdf;
-using IAGrim.BuddyShare;
-using IAGrim.Database.DAO;
-using IAGrim.Parser.Arc;
 using IAGrim.Parsers.GameDataParsing.Service;
-using IAGrim.Services.Crafting;
-using IAGrim.UI.Popups;
 using IAGrim.Utilities.HelperClasses;
 
 
@@ -41,35 +27,6 @@ namespace IAGrim {
         Program {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
         private static MainWindow _mw;
-
-#if DEBUG
-
-        private static void Test() {
-            return;
-            using (ThreadExecuter threadExecuter = new ThreadExecuter()) {
-                var factory = new SessionFactory();
-                string _grimdawnLocation = new DatabaseSettingRepo(threadExecuter, factory).GetCurrentDatabasePath();
-                IItemTagDao _itemTagDao = new ItemTagRepo(threadExecuter, factory);
-                IDatabaseItemDao _databaseItemDao = new DatabaseItemRepo(threadExecuter, factory);
-                IDatabaseItemStatDao _databaseItemStatDao = new DatabaseItemStatRepo(threadExecuter, factory);
-                IItemSkillDao _itemSkillDao = new ItemSkillRepo(threadExecuter, factory);
-                
-                ParsingService parsingService = new ParsingService(
-                    _itemTagDao,
-                    _grimdawnLocation,
-                    _databaseItemDao,
-                    _databaseItemStatDao,
-                    _itemSkillDao,
-                    Properties.Settings.Default.LocalizationFile
-                );
-
-                parsingService.Execute();
-
-                int x = 9;
-            }
-
-        }
-#endif
 
 
         private static void LoadUuid(IDatabaseSettingDao dao) {
@@ -121,9 +78,6 @@ namespace IAGrim {
                 MessageBox.Show("It appears VS 2010 (x86) redistributable is not installed.\nPlease install it to continue using IA", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-#if DEBUG
-            Test();
-#endif
 
             // Prevent running in RELEASE mode by accident
             // And thus risking the live database
@@ -279,8 +233,6 @@ namespace IAGrim {
             IDatabaseItemStatDao databaseItemStatDao = new DatabaseItemStatRepo(threadExecuter, factory);
             IItemTagDao itemTagDao = new ItemTagRepo(threadExecuter, factory);
             
-            IBuddyItemDao buddyItemDao = new BuddyItemRepo(threadExecuter, factory);
-            IBuddySubscriptionDao buddySubscriptionDao = new BuddySubscriptionRepo(threadExecuter, factory);
             IRecipeItemDao recipeItemDao = new RecipeItemRepo(threadExecuter, factory);
             IItemSkillDao itemSkillDao  = new ItemSkillRepo(threadExecuter, factory);
             ArzParser arzParser = new ArzParser(databaseItemDao, databaseItemStatDao, databaseSettingDao, itemSkillDao);
@@ -311,11 +263,8 @@ namespace IAGrim {
                     databaseItemStatDao, 
                     playerItemDao, 
                     databaseSettingDao, 
-                    buddyItemDao, 
-                    buddySubscriptionDao, 
                     arzParser,
                     recipeItemDao,
-                    itemSkillDao,
                     itemTagDao,
                     parsingService
                 );

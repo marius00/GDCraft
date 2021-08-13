@@ -16,7 +16,6 @@ using IAGrim.UI.Controller;
 using IAGrim.Utilities;
 using IAGrim.Database.Interfaces;
 using IAGrim.Parsers.GameDataParsing.Service;
-using IAGrim.UI.Popups;
 using IAGrim.Utilities.HelperClasses;
 // 
 namespace IAGrim.UI {
@@ -56,20 +55,9 @@ namespace IAGrim.UI {
             _parsingService = parsingService;
             _itemTagDao = itemTagDao;
 
-            _controller.BindCheckbox(cbMinimizeToTray);
 
-            _controller.BindCheckbox(cbMergeDuplicates);
-            _controller.BindCheckbox(cbTransferAnyMod);
-            _controller.BindCheckbox(cbSecureTransfers);
-            _controller.BindCheckbox(cbShowRecipesAsItems);
-            _controller.BindCheckbox(cbAutoUpdateModSettings);
-            //_controller.BindCheckbox(cbInstalootDisabled);
-            _controller.BindCheckbox(cbInstaTransfer);
-            _controller.BindCheckbox(cbAutoSearch);
-            _controller.BindCheckbox(cbDisplaySkills);
             _controller.LoadDefaults();
 
-            cbInstalootEnabled.Checked = (InstalootSettingType)Properties.Settings.Default.InstalootSetting == InstalootSettingType.Enabled;
         }
 
         private void SettingsWindow_Load(object sender, EventArgs e) {
@@ -99,7 +87,6 @@ namespace IAGrim.UI {
 
             radioBeta.Checked = (bool)Properties.Settings.Default.SubscribeExperimentalUpdates;
             radioRelease.Checked = !(bool)Properties.Settings.Default.SubscribeExperimentalUpdates;
-            firefoxCheckBox1.Checked = Properties.Settings.Default.Hotfix1_0_4_0_active;
             //controller.LoadDefaults();
 
         }
@@ -154,20 +141,6 @@ namespace IAGrim.UI {
             e.Cancel = false;
         }
 
-        private void cbShowRecipesAsItems_CheckedChanged(object sender, EventArgs e) {
-            if (_itemViewUpdateTrigger != null)
-                _itemViewUpdateTrigger();
-        }
-
-        private void cbMergeDuplicates_CheckedChanged(object sender, EventArgs e) {
-            if (_itemViewUpdateTrigger != null)
-                _itemViewUpdateTrigger();
-        }
-
-        private void cbShowBaseStats_CheckedChanged(object sender, EventArgs e) {
-            if (_itemViewUpdateTrigger != null)
-                _itemViewUpdateTrigger();
-        }
 
         private void buttonLanguageSelect_Click(object sender, EventArgs e) {
             new LanguagePackPicker(_itemTagDao, _settingsDao, _playerItemDao, _parser, GrimDawnDetector.GetGrimLocation(), _parsingService)
@@ -177,44 +150,9 @@ namespace IAGrim.UI {
         }
 
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            if (e.Button == MouseButtons.Left)
-                Process.Start("http://grimdawn.dreamcrash.org/ia/experimental.html#instaloot");
-        }
-
-        private void buttonImportExport_Click(object sender, EventArgs e) {
-            new Popups.ImportExport.ImportExportContainer(_modFilter, _playerItemDao, _stashManager).ShowDialog();
-        }
-
-        private void cbDisplaySkills_CheckedChanged(object sender, EventArgs e) {
-            _itemViewUpdateTrigger?.Invoke();
-        }
 
         private void buttonAdvancedSettings_Click(object sender, EventArgs e) {
-            new StashTabPicker(_stashManager.NumStashTabs).ShowDialog();
         }
 
-        private void linkSourceCode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Process.Start("https://github.com/marius00/iagd");
-        }
-
-        private void cbInstalootDisabled_CheckedChanged(object sender, EventArgs e) {
-
-            Properties.Settings.Default.InstalootSetting = (int)(cbInstalootEnabled.Checked ? InstalootSettingType.Enabled : InstalootSettingType.Disabled);
-            Properties.Settings.Default.Save();
-
-            var debuygggy = Properties.Settings.Default.InstalootSetting;
-            var debuygggy2 = (InstalootSettingType)Properties.Settings.Default.InstalootSetting;
-            int x = 9;
-        }
-
-        private void cbInstaTransfer_CheckedChanged(object sender, EventArgs e) {
-
-        }
-
-        private void firefoxCheckBox1_CheckedChanged(object sender, EventArgs e) {
-            Properties.Settings.Default.Hotfix1_0_4_0_active = firefoxCheckBox1.Checked;
-            Properties.Settings.Default.Save();
-        }
     }
 }

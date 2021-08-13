@@ -8,16 +8,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Timers;
 using System.Windows.Forms;
 using AutoUpdaterDotNET;
-using CefSharp;
 using EvilsoftCommons;
-using EvilsoftCommons.Cloud;
-using EvilsoftCommons.DllInjector;
 using EvilsoftCommons.Exceptions;
-using IAGrim.Backup;
-using IAGrim.BuddyShare;
 using IAGrim.Database.Interfaces;
 using IAGrim.Parsers;
 using IAGrim.Parsers.Arz;
@@ -25,13 +19,10 @@ using IAGrim.Parsers.Arz.dto;
 using IAGrim.Parsers.GameDataParsing.Service;
 using IAGrim.Properties;
 using IAGrim.Services;
-using IAGrim.Services.MessageProcessor;
+using IAGrim.Services.Crafting;
 using IAGrim.UI.Controller;
 using IAGrim.UI.Misc;
-using IAGrim.UI.Popups;
-using IAGrim.UI.Tabs;
 using IAGrim.Utilities;
-using IAGrim.Utilities.Cloud;
 using IAGrim.Utilities.HelperClasses;
 using IAGrim.Utilities.RectanglePacker;
 using log4net;
@@ -41,92 +32,34 @@ using Timer = System.Timers.Timer;
 namespace IAGrim.UI {
 
     public partial class MainWindow : Form {
+        public readonly JSWrapper JsBind = new JSWrapper { IsTimeToShowNag = -1 };
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
         readonly CefBrowserHandler _cefBrowserHandler;
-
-        private string UPDATE_XML {
-            get {
-                var v = Assembly.GetExecutingAssembly().GetName().Version;
-                string version = $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
-
-                if ((bool)Settings.Default.SubscribeExperimentalUpdates) {
-                    return $"http://grimdawn.dreamcrash.org/ia/version.php?beta&version={version}";
-                }
-                return $"http://grimdawn.dreamcrash.org/ia/version.php?version={version}";
-            }
-        }
 
         private readonly ISettingsReadController _settingsController = new SettingsController();
 
         private FormWindowState _previousWindowState = FormWindowState.Normal;
         private readonly TooltipHelper _tooltipHelper = new TooltipHelper();
-        private DateTime _lastAutomaticUpdateCheck = default(DateTime);
         private DateTime _lastTimeNotMinimized = DateTime.Now;
         private readonly DynamicPacker _dynamicPacker;
-        private readonly List<IMessageProcessor> _messageProcessors = new List<IMessageProcessor>();
 
         private StashManager _stashManager;
-        private BuddySettings _buddySettingsWindow;
         private StashFileMonitor _stashFileMonitor = new StashFileMonitor();
+        private JsonBindingService _jsonBindingService;
 
-        private Action<RegisterWindow.DataAndType> _registerWindowDelegate;
-        private RegisterWindow _window;
-        private InjectionHelper _injector;
-        private ProgressChangedEventHandler _injectorCallbackDelegate;
 
         private Timer _timerReportUsage;
-        private BuddyBackgroundThread _buddyBackgroundThread;
-        private BackgroundTask _backupBackgroundTask;
-        private ItemTransferController _transferController;
-        private ItemSynchronizer _itemSynchronizer; // Online backups
 
         private readonly IItemTagDao _itemTagDao;
         private readonly IDatabaseItemDao _databaseItemDao;
         private readonly IDatabaseItemStatDao _databaseItemStatDao;
         private readonly IPlayerItemDao _playerItemDao;
         private readonly IDatabaseSettingDao _databaseSettingDao;
-        private readonly IBuddyItemDao _buddyItemDao;
-        private readonly IBuddySubscriptionDao _buddySubscriptionDao;
         private readonly ArzParser _arzParser;
         private readonly RecipeParser _recipeParser;
-        private readonly IItemSkillDao _itemSkillDao;
         private readonly ParsingService _parsingService;
 
         private readonly Stopwatch _reportUsageStatistics;
-
-#region Stash Status
-        
-
-        /// <summary>
-        /// Toolstrip callback for GDInjector
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void InjectorCallback(object sender, ProgressChangedEventArgs e) {
-            if (InvokeRequired) {
-                Invoke((MethodInvoker)delegate { InjectorCallback(sender, e); });
-            } else {
-                if (e.ProgressPercentage == InjectionHelper.INJECTION_ERROR) {
-                    GlobalSettings.StashStatus = StashAvailability.ERROR;
-                    statusLabel.Text = e.UserState as string;
-                }
-                // No grim dawn client, so stash is closed!
-                else if (e.ProgressPercentage == InjectionHelper.NO_PROCESS_FOUND_ON_STARTUP) {
-                    if (GlobalSettings.StashStatus == StashAvailability.UNKNOWN) {
-                        GlobalSettings.StashStatus = StashAvailability.CLOSED;
-                        GlobalSettings.GrimDawnRunning = false; // V1.0.4.0 hotfix
-                    }
-                }
-                // No grim dawn client, so stash is closed!
-                else if (e.ProgressPercentage == InjectionHelper.NO_PROCESS_FOUND) {
-                    GlobalSettings.StashStatus = StashAvailability.CLOSED;
-                    GlobalSettings.GrimDawnRunning = false;// V1.0.4.0 hotfix
-                }
-            }
-        }
-
-
-#endregion Stash Status
 
         [DllImport("kernel32")]
         private static extern UInt64 GetTickCount64();
@@ -139,11 +72,8 @@ namespace IAGrim.UI {
              IDatabaseItemStatDao databaseItemStatDao,
              IPlayerItemDao playerItemDao,
              IDatabaseSettingDao databaseSettingDao,
-             IBuddyItemDao buddyItemDao,
-             IBuddySubscriptionDao buddySubscriptionDao,
              ArzParser arzParser,
              IRecipeItemDao recipeItemDao,
-             IItemSkillDao itemSkillDao,
             IItemTagDao itemTagDao, ParsingService parsingService) {
             _cefBrowserHandler = browser;
             InitializeComponent();
@@ -157,11 +87,8 @@ namespace IAGrim.UI {
             _databaseItemStatDao = databaseItemStatDao;
             _playerItemDao = playerItemDao;
             _databaseSettingDao = databaseSettingDao;
-            _buddyItemDao = buddyItemDao;
-            _buddySubscriptionDao = buddySubscriptionDao;
             _arzParser = arzParser;
             _recipeParser = new RecipeParser(recipeItemDao);
-            _itemSkillDao = itemSkillDao;
             _itemTagDao = itemTagDao;
             _parsingService = parsingService;
         }
@@ -175,32 +102,10 @@ namespace IAGrim.UI {
                 if (_reportUsageStatistics.Elapsed.Hours > 12) {
                     _reportUsageStatistics.Restart();
                     ThreadPool.QueueUserWorkItem(m => ExceptionReporter.ReportUsage());
-                    AutoUpdater.Start(UPDATE_XML);
                 }
             }
         }
 
-
-        private void OnlineBackupAuthFailureHandler() {
-            Logger.Warn("Online backup failed due to an authentication failure.");
-            _itemSynchronizer?.Dispose();
-            _itemSynchronizer = null;
-        }
-        private void EnableOnlineBackups(bool enable) {
-            if (enable) {
-                if (_itemSynchronizer == null) {
-                    _itemSynchronizer = new ItemSynchronizer(
-                        _playerItemDao, 
-                        Settings.Default.OnlineBackupToken, 
-                        GlobalSettings.RemoteBackupServer, 
-                        OnlineBackupAuthFailureHandler);
-                    _itemSynchronizer.Start();
-                }
-            } else {
-                _itemSynchronizer?.Dispose();
-                _itemSynchronizer = null;
-            }
-        }
 
 
         private void IterAndCloseForms(Control.ControlCollection controls) {
@@ -222,7 +127,6 @@ namespace IAGrim.UI {
             _stashFileMonitor = null;
             _stashManager = null;
 
-            _backupBackgroundTask?.Dispose();
 
             _timerReportUsage?.Stop();
             _timerReportUsage?.Dispose();
@@ -230,19 +134,6 @@ namespace IAGrim.UI {
 
             _tooltipHelper?.Dispose();
 
-            _buddyBackgroundThread?.Dispose();
-            _buddyBackgroundThread = null;
-
-            _itemSynchronizer?.Dispose();
-            _itemSynchronizer = null;
-
-            panelHelp.Controls.Clear();
-
-            _injector?.Dispose();
-            _injector = null;
-
-            _window?.Dispose();
-            _window = null;
 
             IterAndCloseForms(Controls);
         }
@@ -260,22 +151,6 @@ namespace IAGrim.UI {
             }
             catch (ObjectDisposedException) {
                 Logger.Debug("Attempted to set feedback, but UI already disposed. (Probably shutting down)");
-            }
-        }
-
-        private void SetTooltipAtmouse(string message) {
-            _tooltipHelper.ShowTooltipAtMouse(message, _cefBrowserHandler.BrowserControl);
-        }
-
-        private void CheckForUpdates() {
-            if (GetTickCount64() > 5 * 60 * 1000 && (DateTime.Now - _lastAutomaticUpdateCheck).TotalHours > 36) {
-                AutoUpdater.LetUserSelectRemindLater = true;
-                AutoUpdater.RemindLaterTimeSpan = RemindLaterFormat.Days;
-                AutoUpdater.RemindLaterAt = 7;
-                AutoUpdater.Start(UPDATE_XML);
-
-                _lastAutomaticUpdateCheck = DateTime.Now;
-                Logger.Info("Checking for updates..");
             }
         }
 
@@ -316,10 +191,7 @@ namespace IAGrim.UI {
             _stashManager = new StashManager(_playerItemDao, _databaseItemStatDao, SetFeedback, () => { });
             _stashFileMonitor.OnStashModified += (_, __) => {
                 StashEventArg args = __ as StashEventArg;
-                if (_stashManager.TryLootStashFile(args?.Filename)) {
-                    // STOP TIMER
-                    _stashFileMonitor.CancelQueuedNotify();
-                }
+                _stashManager.UpdateUnlooted(args?.Filename);
             };
             if (!_stashFileMonitor.StartMonitorStashfile(GlobalPaths.SavePath)) {
                 MessageBox.Show("Ooops!\nIt seems you are synchronizing your saves to steam cloud..\nThis tool is unfortunately not compatible.\n");
@@ -330,19 +202,7 @@ namespace IAGrim.UI {
 
             }
 
-            //ItemHtmlWriter.Write(new List<PlayerHeldItem>());
-
-            // Chicken and the egg..
-            SearchController searchController = new SearchController(
-                _databaseItemDao,
-                _playerItemDao, 
-                _databaseItemStatDao, 
-                _itemSkillDao, 
-                _buddyItemDao,
-                _stashManager
-                );
-            _cefBrowserHandler.InitializeChromium(searchController.JsBind);
-            searchController.Browser = _cefBrowserHandler;
+            _cefBrowserHandler.InitializeChromium(JsBind);
             searchPanel.Controls.Add(_cefBrowserHandler.BrowserControl);
 
 
@@ -371,21 +231,7 @@ namespace IAGrim.UI {
             var addAndShow = UIHelper.AddAndShow;
 
 
-            // Create the tab contents
-            _buddySettingsWindow = new BuddySettings(delegate (bool b) { BuddySyncEnabled = b; }, 
-                _buddyItemDao, 
-                _buddySubscriptionDao
-                );
-
-
-            var backupSettings = new BackupSettings(EnableOnlineBackups, _playerItemDao);
-            tabControl1.Selected += ((s, ev) => {
-
-            });
             addAndShow(new ModsDatabaseConfig(() => { }, _databaseSettingDao, _arzParser, _playerItemDao, _parsingService), modsPanel);
-            addAndShow(new HelpTab(), panelHelp);            
-
-
 
             addAndShow(
                 new SettingsWindow(
@@ -402,9 +248,7 @@ namespace IAGrim.UI {
                 ),
                 settingsPanel);
 
-
-            new StashTabPicker(_stashManager.NumStashTabs).SaveStashSettingsToRegistry();
-
+            
 #if !DEBUG
             ThreadPool.QueueUserWorkItem(m => ExceptionReporter.ReportUsage());
             CheckForUpdates();
@@ -425,16 +269,7 @@ namespace IAGrim.UI {
 
 
 
-            //settingsController.Data.budd
-            BuddySyncEnabled = (bool)Settings.Default.BuddySyncEnabled;
-
-            // Start the backup task
-            _backupBackgroundTask = new BackgroundTask(new CloudBackup(_playerItemDao));
-
-
-
             LocalizationLoader.ApplyLanguage(Controls, GlobalSettings.Language);
-            EasterEgg.Activate(this);
 
 
             // Initialize the "stash packer" used to find item positions for transferring items ingame while the stash is open
@@ -463,69 +298,21 @@ namespace IAGrim.UI {
                 }
             }
 
-            _messageProcessors.Add(new ItemPositionFinder(_dynamicPacker));
-            _messageProcessors.Add(new PlayerPositionTracker());
-            _messageProcessors.Add(new StashStatusHandler());
-            
-
-            GlobalSettings.StashStatusChanged += GlobalSettings_StashStatusChanged;
 
 
             Application.AddMessageFilter(new MousewheelMessageFilter());
-
-
-            {
-                var b = !string.IsNullOrEmpty(Settings.Default.OnlineBackupToken) && Settings.Default.OnlineBackupVerified;
-                EnableOnlineBackups(b);
-            }
 
 
             var titleTag = GlobalSettings.Language.GetTag("iatag_ui_itemassistant");
             if (!string.IsNullOrEmpty(titleTag)) {
                 this.Text += $" - {titleTag}";
             }
+
+            var costCalculationService = new CostCalculationService(_playerItemDao, _stashManager);
+            _jsonBindingService = new JsonBindingService(_stashManager, JsBind, _cefBrowserHandler, new RecipeService(_databaseItemDao), costCalculationService);
         }
 
 
-        private void GlobalSettings_StashStatusChanged(object sender, EventArgs e) {
-
-            if (InvokeRequired) {
-                Invoke((MethodInvoker)delegate { GlobalSettings_StashStatusChanged(sender, e); });
-                return;
-            }
-
-            switch (GlobalSettings.StashStatus) {
-                case StashAvailability.OPEN:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 192, 0, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_open");
-                    break;
-                case StashAvailability.CRAFTING:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 192, 0, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_crafting");
-                    break;
-                case StashAvailability.CLOSED:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 0, 142, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_closed");
-                    break;
-                case StashAvailability.ERROR:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 192, 0, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_error");
-                    break;
-                case StashAvailability.UNKNOWN:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 192, 0, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_unknown");
-                    break;
-                case StashAvailability.SORTED:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 192, 0, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_sorted");
-                    break;
-                default:
-                    tsStashStatus.ForeColor = Color.FromArgb(255, 192, 0, 0);
-                    tsStashStatus.Text = GlobalSettings.Language.GetTag("iatag_stash_") + GlobalSettings.StashStatus;
-                    break;
-
-            }
-        }
 
 #region Tray and Menu
 
@@ -567,57 +354,9 @@ namespace IAGrim.UI {
             Close();
         }
 
-#endregion Tray and Menu
+        #endregion Tray and Menu
 
-#region BuddySync
-        
-        /// <summary>
-        /// Enable / Disable the buddy sync feature
-        /// </summary>
-        private bool BuddySyncEnabled {
-            get {
-                return _buddyBackgroundThread != null;
-            }
-            set {
-                if (value) {
-                    // Reset timers etc first
-                    BuddySyncEnabled = false;
 
-                    List<long> buddies = new List<long>(_buddySubscriptionDao.ListAll().Select(m => m.Id));
-                    _buddyBackgroundThread = new BuddyBackgroundThread(BuddyItemsCallback, _playerItemDao, _buddyItemDao, buddies, 3 * 60 * 1000);
-                } else {
-                    if (_buddyBackgroundThread != null) {
-                        _buddyBackgroundThread.Dispose();
-                        _buddyBackgroundThread = null;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// BuddyShare callback to store data on UI thread (SQL is here)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BuddyItemsCallback(object sender, ProgressChangedEventArgs e) {
-            if (InvokeRequired) {
-                Invoke((MethodInvoker)delegate {
-                    BuddyItemsCallback(sender, e);
-                });
-            } else {
-                if (e.ProgressPercentage == BuddyBackgroundThread.ProgressStoreBuddydata) {
-
-                    _buddySettingsWindow.UpdateBuddyList();
-                } else if (e.ProgressPercentage == BuddyBackgroundThread.ProgressSetUid) {
-                    _buddySettingsWindow.UID = (long)e.UserState;
-                }
-            }
-        }
-
-#endregion BuddySync
-
-        
-        
         private void button1_Click(object sender, EventArgs e) {
             _cefBrowserHandler.ShowDevTools();
         }

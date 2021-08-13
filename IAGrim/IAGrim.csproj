@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props')" />
   <Import Project="..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props" Condition="Exists('..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props')" />
   <Import Project="..\packages\cef.redist.x64.91.1.23\build\cef.redist.x64.props" Condition="Exists('..\packages\cef.redist.x64.91.1.23\build\cef.redist.x64.props')" />
@@ -99,6 +100,12 @@
     <Reference Include="CefSharp.WinForms, Version=91.1.230.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
       <HintPath>..\packages\CefSharp.WinForms.91.1.230\lib\net452\CefSharp.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Gameloop.Vdf, Version=0.4.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gameloop.Vdf.0.4.3\lib\net45\Gameloop.Vdf.dll</HintPath>
       <Private>True</Private>
@@ -107,8 +114,8 @@
       <HintPath>..\packages\Iesi.Collections.4.0.2\lib\net461\Iesi.Collections.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>Required_Bins\Ionic.Zip.dll</HintPath>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
@@ -135,12 +142,18 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Data.SQLite, Version=1.0.97.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Required_Bins\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.114.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.114.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.114.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.114.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.114.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
@@ -161,28 +174,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backup\FileWriter\FileExporter.cs" />
-    <Compile Include="Backup\FileWriter\GDFileExporter.cs" />
-    <Compile Include="Backup\FileWriter\IAFileExporter.cs" />
-    <Compile Include="Backup\ItemSynchronizer.cs" />
-    <Compile Include="Backup\Models\PlayerItemBackupDeleteResponse.cs" />
-    <Compile Include="Backup\Models\PlayerItemBackupDownload.cs" />
-    <Compile Include="Backup\Models\PlayerItemBackupUpload.cs" />
-    <Compile Include="Backup\Models\PlayerItemBackupUploadResponse.cs" />
-    <Compile Include="Backup\Models\PlayerItemLoginResponse.cs" />
-    <Compile Include="Backup\Models\PlayerItemResponseCodes.cs" />
-    <Compile Include="BuddyShare\dto\BuddyUploadResponse.cs" />
-    <Compile Include="BuddyShare\dto\JsonBuddyItem.cs" />
-    <Compile Include="BuddyShare\GzipCompressionHandler.cs" />
-    <Compile Include="Database\DAO\BuddyItemDaoImpl.cs" />
     <Compile Include="Database\DAO\DatabaseItemStatDaoImpl.cs" />
     <Compile Include="Database\DAO\Dto\StatFetch.cs" />
     <Compile Include="Database\DAO\ItemSkillDaoImpl.cs" />
     <Compile Include="Database\DAO\ItemTagDaoImpl.cs" />
     <Compile Include="Database\DAO\RecipeItemDaoImpl.cs" />
     <Compile Include="Database\DAO\Table\BuddyItemRecordTable.cs" />
-    <Compile Include="Database\DAO\Table\BuddyItemsTable.cs" />
-    <Compile Include="Database\DAO\Table\BuddyStashTable.cs" />
     <Compile Include="Database\DAO\Table\DatabaseItemStatTable.cs" />
     <Compile Include="Database\DAO\Table\DatabaseItemTable.cs" />
     <Compile Include="Database\DAO\Table\DeletedPlayerItemTable.cs" />
@@ -194,8 +191,6 @@
     <Compile Include="Database\DAO\Table\SkillTable.cs" />
     <Compile Include="Database\Dto\ModSelection.cs" />
     <Compile Include="Database\Dto\Search.cs" />
-    <Compile Include="Database\Interfaces\IBuddyItemDao.cs" />
-    <Compile Include="Database\Interfaces\IBuddySubscriptionDao.cs" />
     <Compile Include="Database\Interfaces\IDatabaseItemDao.cs" />
     <Compile Include="Database\Interfaces\IDatabaseItemStatDao.cs" />
     <Compile Include="Database\Interfaces\IDatabaseSettingDao.cs" />
@@ -222,8 +217,6 @@
     <Compile Include="Database\SessionFactoryLoader\SessionFactory.cs" />
     <Compile Include="Database\SearchResult.cs" />
     <Compile Include="Database\Synchronizer\BasicSynchronizer.cs" />
-    <Compile Include="Database\Synchronizer\BuddyItemRepo.cs" />
-    <Compile Include="Database\Synchronizer\BuddySubscriptionRepo.cs" />
     <Compile Include="Database\Synchronizer\Core\ThreadExecuter.cs" />
     <Compile Include="Database\Synchronizer\ItemTagRepo.cs" />
     <Compile Include="Database\Synchronizer\DatabaseItemRepo.cs" />
@@ -240,15 +233,7 @@
     <Compile Include="Parsers\Arz\StashFileMonitor.cs" />
     <Compile Include="Parsers\Arz\StashManager.cs" />
     <Compile Include="Parsers\Arz\StatUpdateUIBackgroundWorker.cs" />
-    <Compile Include="BuddyShare\BuddyBackgroundThread.cs" />
-    <Compile Include="BuddyShare\SerializedPlayerItems.cs" />
-    <Compile Include="BuddyShare\Serializer.cs" />
-    <Compile Include="BuddyShare\Synchronizer.cs" />
     <Compile Include="Database\DAO\BaseDao.cs" />
-    <Compile Include="Database\Model\BuddyItem.cs" />
-    <Compile Include="Database\Model\BuddyStash.cs" />
-    <Compile Include="Database\Model\BuddySubscription.cs" />
-    <Compile Include="Database\DAO\BuddySubscriptionDaoImpl.cs" />
     <Compile Include="Database\Model\DatabaseItemStat.cs" />
     <Compile Include="Database\Interfaces\PlayerHeldItem.cs" />
     <Compile Include="Database\DAO\PlayerItemDaoImpl.cs" />
@@ -285,19 +270,9 @@
     <Compile Include="Services\Crafting\dto\ComponentListEntry.cs" />
     <Compile Include="Services\Crafting\RecipeService.cs" />
     <Compile Include="Services\Dto\DBSTatRow.cs" />
-    <Compile Include="Services\GrimStateTracker.cs" />
     <Compile Include="Services\ItemPaginatorService.cs" />
     <Compile Include="Services\ItemStatService.cs" />
-    <Compile Include="Services\MessageProcessor\CloudDetectorProcessor.cs" />
-    <Compile Include="Services\MessageProcessor\GenericErrorHandler.cs" />
-    <Compile Include="Services\MessageProcessor\LogMessageProcessor.cs" />
-    <Compile Include="Services\MessageProcessor\DebugMessageProcessor.cs" />
-    <Compile Include="Services\MessageProcessor\IMessageProcessor.cs" />
-    <Compile Include="Services\MessageProcessor\ItemInjectCallbackProcessor.cs" />
-    <Compile Include="Services\MessageProcessor\ItemSpawnedProcessor.cs" />
-    <Compile Include="Services\MessageProcessor\ItemPositionFinder.cs" />
-    <Compile Include="Services\MessageProcessor\PlayerPositionTracker.cs" />
-    <Compile Include="Services\MessageProcessor\StashStatusHandler.cs" />
+    <Compile Include="Services\JsonBindingService.cs" />
     <Compile Include="Theme\ComboBoxItem.cs" />
     <Compile Include="Theme\ComboBoxItemQuality.cs" />
     <Compile Include="Theme\Firefox\FirefoxCheckBox.cs">
@@ -315,62 +290,12 @@
     <Compile Include="UI\Misc\RequestRecipeArgument.cs" />
     <Compile Include="UI\Misc\TextboxHoverFocusHighlight.cs" />
     <Compile Include="UI\Model\ListViewEntry.cs" />
-    <Compile Include="UI\Popups\ImportExport\ImportExportContainer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\ImportExportContainer.Designer.cs">
-      <DependentUpon>ImportExportContainer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\Panels\ExportMode.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\Panels\ExportMode.Designer.cs">
-      <DependentUpon>ExportMode.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\Panels\ImportExportModePicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\Panels\ImportExportModePicker.Designer.cs">
-      <DependentUpon>ImportExportModePicker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\Panels\ImportMode.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\ImportExport\Panels\ImportMode.Designer.cs">
-      <DependentUpon>ImportMode.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Popups\OnlineBackupLogin.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\OnlineBackupLogin.Designer.cs">
-      <DependentUpon>OnlineBackupLogin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Popups\StashTabPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\StashTabPicker.Designer.cs">
-      <DependentUpon>StashTabPicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Service\DatabaseModSelectionService.cs" />
-    <Compile Include="UI\Tabs\BackupSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Tabs\BackupSettings.Designer.cs">
-      <DependentUpon>BackupSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Tabs\BuddySettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Tabs\BuddySettings.Designer.cs">
-      <DependentUpon>BuddySettings.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\ComboBoxItemDisabler.cs" />
     <Compile Include="UI\Controller\ISettingsController.cs" />
     <Compile Include="UI\Controller\ISettingsReadController.cs" />
-    <Compile Include="UI\Controller\ItemTransferController.cs" />
     <Compile Include="UI\Controller\JsonSkill.cs" />
     <Compile Include="UI\Controller\JsonStat.cs" />
-    <Compile Include="UI\Controller\SearchController.cs" />
     <Compile Include="UI\Controller\SettingsController.cs" />
     <Compile Include="UI\Controller\JsonItem.cs" />
     <Compile Include="UI\Popups\DonateNagScreen.cs">
@@ -378,12 +303,6 @@
     </Compile>
     <Compile Include="UI\Popups\DonateNagScreen.Designer.cs">
       <DependentUpon>DonateNagScreen.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Tabs\HelpTab.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Tabs\HelpTab.Designer.cs">
-      <DependentUpon>HelpTab.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Popups\LanguagePackPicker.cs">
       <SubType>Form</SubType>
@@ -397,12 +316,6 @@
     <Compile Include="UI\Misc\MessageType.cs" />
     <Compile Include="UI\Misc\MousewheelMessageFilter.cs" />
     <Compile Include="UI\Misc\StashTransferEventArgs.cs" />
-    <Compile Include="UI\Tabs\LoggingWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Tabs\LoggingWindow.Designer.cs">
-      <DependentUpon>LoggingWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Tabs\ModsDatabaseConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -415,12 +328,6 @@
     <Compile Include="UI\Tabs\SettingsWindow.Designer.cs">
       <DependentUpon>SettingsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Popups\StashPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\Popups\StashPicker.Designer.cs">
-      <DependentUpon>StashPicker.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Tabs\Util\ModSelectionHandler.cs" />
     <Compile Include="UI\UIHelper.cs" />
     <Compile Include="UI\Popups\UpdatingPlayerItemsScreen.cs">
@@ -431,9 +338,7 @@
     </Compile>
     <Compile Include="Utilities\ActionCooldown.cs" />
     <Compile Include="Utilities\CallerMemberNameAttribute.cs" />
-    <Compile Include="Utilities\Cloud\CloudBackup.cs" />
     <Compile Include="Utilities\DependencyChecker.cs" />
-    <Compile Include="Utilities\EasterEgg.cs" />
     <Compile Include="Utilities\GlobalPaths.cs" />
     <Compile Include="Utilities\GlobalSettings.cs" />
     <Compile Include="Utilities\GrimDawnDetector.cs" />
@@ -496,35 +401,8 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\ImportExport\ImportExportContainer.resx">
-      <DependentUpon>ImportExportContainer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\ImportExport\Panels\ExportMode.resx">
-      <DependentUpon>ExportMode.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\ImportExport\Panels\ImportExportModePicker.resx">
-      <DependentUpon>ImportExportModePicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\ImportExport\Panels\ImportMode.resx">
-      <DependentUpon>ImportMode.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\OnlineBackupLogin.resx">
-      <DependentUpon>OnlineBackupLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\StashTabPicker.resx">
-      <DependentUpon>StashTabPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Tabs\BackupSettings.resx">
-      <DependentUpon>BackupSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Tabs\BuddySettings.resx">
-      <DependentUpon>BuddySettings.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Popups\DonateNagScreen.resx">
       <DependentUpon>DonateNagScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Tabs\HelpTab.resx">
-      <DependentUpon>HelpTab.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Popups\LanguagePackPicker.resx">
       <DependentUpon>LanguagePackPicker.cs</DependentUpon>
@@ -532,17 +410,11 @@
     <EmbeddedResource Include="UI\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Tabs\LoggingWindow.resx">
-      <DependentUpon>LoggingWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UI\Tabs\ModsDatabaseConfig.resx">
       <DependentUpon>ModsDatabaseConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Tabs\SettingsWindow.resx">
       <DependentUpon>SettingsWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\Popups\StashPicker.resx">
-      <DependentUpon>StashPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Popups\UpdatingPlayerItemsScreen.resx">
       <DependentUpon>UpdatingPlayerItemsScreen.cs</DependentUpon>
@@ -710,8 +582,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Database\Model\DatabaseItemStat.hbm.xml" />
-    <EmbeddedResource Include="Database\Model\BuddyStash.hbm.xml" />
-    <EmbeddedResource Include="Database\Model\BuddySubscription.hbm.xml" />
     <EmbeddedResource Include="Database\Model\RecipeItem.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -722,9 +592,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="gd.ico" />
-    <Content Include="Required_Bins\SQLite.Interop.dll" />
-    <Content Include="Required_Bins\System.Data.SQLite.dll" />
-    <Content Include="Required_Bins\System.Data.SQLite.xml" />
     <EmbeddedResource Include="Database\Model\DatabaseItem.hbm.xml" />
     <Content Include="hibernate.sqlite.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -740,14 +607,6 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{b7f63b36-55b0-48f9-8b52-54bf4a07df65}</Project>
       <Name>DataAccess</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Evilsoft.Commons\Cloud\Cloud.csproj">
-      <Project>{ddc3793f-4956-42af-886a-42d27cb30261}</Project>
-      <Name>Cloud</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Evilsoft.Commons\DllInjector\DllInjector.csproj">
-      <Project>{2d6c0dc0-2fd0-4c18-9104-4f4689169d88}</Project>
-      <Name>DllInjector</Name>
     </ProjectReference>
     <ProjectReference Include="..\Evilsoft.Commons\EvilsoftCommons.csproj">
       <Project>{d3336c7f-0dbc-4342-991d-d2c082d7f168}</Project>
@@ -780,7 +639,8 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>xcopy /Y "$(SolutionDir)iagrim\Listdlls.exe" "$(TargetDir)"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -790,8 +650,13 @@
     <Error Condition="!Exists('..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.91.1.23\build\cef.redist.x86.props'))" />
     <Error Condition="!Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.props'))" />
     <Error Condition="!Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
   </Target>
   <Import Project="..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.91.1.230\build\CefSharp.Common.targets')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

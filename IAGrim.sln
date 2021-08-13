@@ -5,11 +5,7 @@ VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IAGrim", "IAGrim\IAGrim.csproj", "{E68602BA-8A03-45EC-B1C6-17DF2FBC1DD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DllInjector", "Evilsoft.Commons\DllInjector\DllInjector.csproj", "{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvilsoftCommons", "Evilsoft.Commons\EvilsoftCommons.csproj", "{D3336C7F-0DBC-4342-991D-D2C082D7F168}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloud", "Evilsoft.Commons\Cloud\Cloud.csproj", "{DDC3793F-4956-42AF-886A-42D27CB30261}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{5E068C56-F5EC-4819-9266-295C7A8ED52D}"
 EndProject
@@ -33,14 +29,6 @@ Global
 		{E68602BA-8A03-45EC-B1C6-17DF2FBC1DD0}.Release|Any CPU.Build.0 = Release|x86
 		{E68602BA-8A03-45EC-B1C6-17DF2FBC1DD0}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{E68602BA-8A03-45EC-B1C6-17DF2FBC1DD0}.Release|Mixed Platforms.Build.0 = Release|x86
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2D6C0DC0-2FD0-4C18-9104-4F4689169D88}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D3336C7F-0DBC-4342-991D-D2C082D7F168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3336C7F-0DBC-4342-991D-D2C082D7F168}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3336C7F-0DBC-4342-991D-D2C082D7F168}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -49,14 +37,6 @@ Global
 		{D3336C7F-0DBC-4342-991D-D2C082D7F168}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3336C7F-0DBC-4342-991D-D2C082D7F168}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D3336C7F-0DBC-4342-991D-D2C082D7F168}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{DDC3793F-4956-42AF-886A-42D27CB30261}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5E068C56-F5EC-4819-9266-295C7A8ED52D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E068C56-F5EC-4819-9266-295C7A8ED52D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E068C56-F5EC-4819-9266-295C7A8ED52D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
