@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Timers;
 using IAGrim.Parsers.Arz;
@@ -12,12 +7,12 @@ using IAGrim.Utilities;
 
 namespace IAGrim.UI {
     public partial class DonateNagScreen : Form {
-        readonly System.Timers.Timer _aTimer = new System.Timers.Timer(50);
-        readonly Color _graycolor = Color.FromArgb(240, 240, 240);
-        readonly Color _greenish = Color.FromArgb(220, 224, 210);
-        const int Timer = 600;
-        const int NumSteps = Timer / 50;
-        int _nagDelay = 2200;
+        private readonly System.Timers.Timer _aTimer = new System.Timers.Timer(50);
+        private readonly Color _graycolor = Color.FromArgb(240, 240, 240);
+        private readonly Color _greenish = Color.FromArgb(220, 224, 210);
+        private const int Timer = 600;
+        private const int NumSteps = Timer / 50;
+        private int _nagDelay = 2200;
         
         private int _currentStep = 0;
         private bool _greening = true;
@@ -57,6 +52,8 @@ namespace IAGrim.UI {
                 Properties.Settings.Default.LastNagTimestamp = dt.Ticks;
                 Properties.Settings.Default.Save();
 
+                var tags = new []{ "iatag_ui_nagscreen1_button", "iatag_ui_nagscreen2_button", "iatag_ui_nagscreen3_button", "iatag_ui_nagscreen4_button", "iatag_ui_nagscreen5_button" };
+                buttonNoThanks.Tag = tags[new Random().Next(tags.Length)];
                 LocalizationLoader.ApplyLanguage(Controls, GlobalSettings.Language);
             }
             else {
@@ -103,13 +100,21 @@ namespace IAGrim.UI {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            System.Diagnostics.Process.Start("http://grimdawn.dreamcrash.org/ia/?donate");
-            
+            System.Diagnostics.Process.Start("https://grimdawn.evilsoft.net/?donate");
 
             DateTime dt = DateTime.Now.AddDays(62 + new Random().Next(0, 5));
             Properties.Settings.Default.LastNagTimestamp = dt.Ticks;
-            Properties.Settings.Default.Save();            
-            
+            Properties.Settings.Default.Save();
+            this.Close();
+        }
+
+        private void buttonPatreon_Click(object sender, EventArgs e) {
+            System.Diagnostics.Process.Start("https://www.patreon.com/itemassistant");
+
+            DateTime dt = DateTime.Now.AddDays(150 + new Random().Next(0, 5));
+            Properties.Settings.Default.LastNagTimestamp = dt.Ticks;
+            Properties.Settings.Default.Save();
+            this.Close();
         }
     }
 }

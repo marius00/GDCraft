@@ -17,24 +17,6 @@ namespace IAGrim.Database.Synchronizer {
             this.BaseRepo = repo;
         }
 
-        public Dictionary<string, List<DBSTatRow>> GetStats(IEnumerable<string> records, StatFetch fetchMode) {
-            return ThreadExecuter.Execute(
-                () => repo.GetStats(records, fetchMode)
-            );
-        }
-
-        public Dictionary<long, List<DBSTatRow>> GetStats(List<long> records, StatFetch fetchMode) {
-            return ThreadExecuter.Execute(
-                () => repo.GetStats(records, fetchMode)
-            );
-        }
-
-        public Dictionary<string, List<DBSTatRow>> GetStats(ISession session, StatFetch fetchMode) {
-            return ThreadExecuter.Execute(
-                () => repo.GetStats(session, fetchMode)
-            );
-        }
-
 
         public Dictionary<string, string> MapItemBitmaps(List<string> records) {
             return ThreadExecuter.Execute(
@@ -48,11 +30,6 @@ namespace IAGrim.Database.Synchronizer {
             );
         }
 
-        public Dictionary<string, ISet<DBSTatRow>> GetExpacSkillModifierSkills() {
-            return ThreadExecuter.Execute(
-                () => repo.GetExpacSkillModifierSkills()
-            );
-        }
 
         public string GetSkillName(string skillRecord) {
             return ThreadExecuter.Execute(

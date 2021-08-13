@@ -105,16 +105,6 @@ namespace IAGrim.Database {
         }
 
 
-        public Dictionary<String, List<DBSTatRow>> GetStats(ISession session, StatFetch fetchMode) {
-            return GetStats(session, new List<string>(), fetchMode);
-        }
-
-        public Dictionary<String, List<DBSTatRow>> GetStats(IEnumerable<string> records, StatFetch fetchMode) {
-            using (var session = SessionCreator.OpenSession()) {
-                return GetStats(session, records, fetchMode);
-            }
-        }
-
         public Dictionary<long, List<DBSTatRow>> GetStats(List<long> records, StatFetch fetchMode) {
             using (var session = SessionCreator.OpenSession()) {
                 var statMap = new Dictionary<long, List<DBSTatRow>>();
@@ -170,63 +160,6 @@ namespace IAGrim.Database {
 
                 return statMap;
             }
-        }
-
-        private Dictionary<string, List<DBSTatRow>> GetStats(ISession session, IEnumerable<string> records, StatFetch fetchMode) {
-            Dictionary<string, List<DBSTatRow>> statMap = new Dictionary<string, List<DBSTatRow>>();
-
-            Logger.Debug($"Fetching all stats for {records.Count()} items, fetchMode={fetchMode}");
-
-
-            string sql = string.Join(" ",
-                new[] { $@"select db.{DatabaseItemTable.Record} as Record, s.stat as Stat, s.val1 as Value, s.textvalue as TextValue 
-                FROM {DatabaseItemTable.Table} db, databaseitemstat_v2 s where s.id_databaseitem = db.{DatabaseItemTable.Id}",
-
-                "AND (val1 > 0 or stat in ( :whitelist ))",
-                //"AND (val1 > 0 or NOT stat IN ( :blacklist ))",
-                    fetchMode == StatFetch.PlayerItems ? $"AND baserecord IN (SELECT record FROM playeritemrecord)" : "",
-                    fetchMode == StatFetch.BuddyItems ? $"AND {DatabaseItemTable.Record} IN (SELECT {BuddyItemRecordTable.Record} FROM {BuddyItemRecordTable.Table})" : "",
-                fetchMode == StatFetch.RecipeItems ? $"AND baserecord in (SELECT {RecipeItemTable.Record} FROM {RecipeItemTable.Table})" : "",
-                fetchMode == StatFetch.Skills ? $"AND db.{DatabaseItemTable.Id} IN (SELECT map.{SkillMappingTable.Item} FROM {SkillMappingTable.Table} map)" : "", // Redundant? Either doesn't cover enough, or completely redundant
-                "AND NOT stat IN ( :blacklist )",
-                records.Any() ? $"AND db.{DatabaseItemTable.Record} IN ( :filter )" : ""
-                }
-            );
-
-
-            IQuery query = session.CreateSQLQuery(sql)
-                .SetParameterList("whitelist", SpecialStats)
-                .SetParameterList("blacklist", SpecialIgnores)
-                .SetResultTransformer(Transformers.AliasToBean<DBSTatRow>());
-
-            Logger.Debug(sql);
-            if (records.Count() > 0) {
-                query.SetParameterList("filter", records);
-                //logger.Debug($":filter={String.Join(",", records)}");
-            }
-
-
-            statMap[string.Empty] = new List<DBSTatRow>();
-            foreach (DBSTatRow row in query.List<DBSTatRow>()) {
-                if (!statMap.ContainsKey(row.Record))
-                    statMap[row.Record] = new List<DBSTatRow>();
-
-                statMap[row.Record].Add(row);
-            }
-
-            Logger.Debug($"Fetching stat for {statMap.Count} records");
-
-
-#if DEBUG
-            // If you have run into this exception, you've messed up.
-            // This is a safety catch to detect issues with applying stats too broadly.
-            if (statMap.Count > 10000) {
-                throw new InvalidOperationException("Stat fetch has been done with too many items, severe performance penalties.");
-            }
-#endif
-
-
-            return statMap;
         }
 
         public Dictionary<string, string> MapItemBitmaps(List<string> records) {
