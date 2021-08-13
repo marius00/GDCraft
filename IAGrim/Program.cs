@@ -220,7 +220,6 @@ namespace IAGrim {
             IDatabaseItemStatDao databaseItemStatDao = new DatabaseItemStatRepo(threadExecuter, factory);
             IItemTagDao itemTagDao = new ItemTagRepo(threadExecuter, factory);
             
-            IRecipeItemDao recipeItemDao = new RecipeItemRepo(threadExecuter, factory);
             ArzParser arzParser = new ArzParser();
 
             // TODO: GD Path has to be an input param, as does potentially mods.
@@ -249,7 +248,6 @@ namespace IAGrim {
                     databaseItemStatDao, 
                     databaseSettingDao, 
                     arzParser,
-                    recipeItemDao,
                     itemTagDao,
                     parsingService
                 );

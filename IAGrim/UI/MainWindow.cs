@@ -18,7 +18,6 @@ using IAGrim.Services.Crafting;
 using IAGrim.UI.Controller;
 using IAGrim.UI.Misc;
 using IAGrim.Utilities;
-using IAGrim.Utilities.HelperClasses;
 using log4net;
 using MoreLinq;
 using Timer = System.Timers.Timer;
@@ -48,7 +47,6 @@ namespace IAGrim.UI {
         private readonly IDatabaseItemStatDao _databaseItemStatDao;
         private readonly IDatabaseSettingDao _databaseSettingDao;
         private readonly ArzParser _arzParser;
-        private readonly RecipeParser _recipeParser;
         private readonly ParsingService _parsingService;
 
         private readonly Stopwatch _reportUsageStatistics;
@@ -60,7 +58,6 @@ namespace IAGrim.UI {
              IDatabaseItemStatDao databaseItemStatDao,
              IDatabaseSettingDao databaseSettingDao,
              ArzParser arzParser,
-             IRecipeItemDao recipeItemDao,
             IItemTagDao itemTagDao, ParsingService parsingService) {
             _cefBrowserHandler = browser;
             InitializeComponent();
@@ -73,7 +70,6 @@ namespace IAGrim.UI {
             _databaseItemStatDao = databaseItemStatDao;
             _databaseSettingDao = databaseSettingDao;
             _arzParser = arzParser;
-            _recipeParser = new RecipeParser(recipeItemDao);
             _itemTagDao = itemTagDao;
             _parsingService = parsingService;
         }
@@ -204,14 +200,6 @@ namespace IAGrim.UI {
                 timer.Start();
             }
 
-            // Load recipes
-            foreach (string file in GlobalPaths.FormulasFiles) {
-                if (!string.IsNullOrEmpty(file)) {
-                    bool isHardcore = file.EndsWith("gsh");
-                    Logger.InfoFormat("Reading recipes at \"{0}\", IsHardcore={1}", file, isHardcore);
-                    _recipeParser.UpdateFormulas(file, isHardcore);
-                }
-            }
 
             var addAndShow = UIHelper.AddAndShow;
 

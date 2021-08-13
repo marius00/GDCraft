@@ -11,7 +11,6 @@ namespace IAGrim.Database.Interfaces {
         IList<string> ListAllRecords();
 
         long GetRowCount();
-        IList<RecipeItem> SearchForRecipeItems(Search query);
 
         DatabaseItemDto FindDtoByRecord(string record);
         List<DatabaseItemDto> GetCraftableItems();
