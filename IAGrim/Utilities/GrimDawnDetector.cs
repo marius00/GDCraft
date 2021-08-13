@@ -37,46 +37,16 @@ namespace IAGrim {
             List<string> paths = new List<string>();
             if (File.Exists(vdf)) {
                 dynamic config = VdfConvert.Deserialize(File.ReadAllText(vdf));
-                var root = config.Value.Software.Valve.Steam;
+                var root = config.Value;
 
-                try {
-                    paths.Add(root.BaseInstallFolder_1.Value.ToString());
-                }
-                catch (KeyNotFoundException) {
-                    Logger.Debug("Key #1 not found, stopping parse of steam config");
-                    return paths;
-                }
-
-                try {
-                    paths.Add(root.BaseInstallFolder_2.Value.ToString());
-                }
-                catch (KeyNotFoundException) {
-                    Logger.Debug("Key #2 not found, stopping parse of steam config");
-                    return paths;
-                }
-
-                try {
-                    paths.Add(root.BaseInstallFolder_3.Value.ToString());
-                }
-                catch (KeyNotFoundException) {
-                    Logger.Debug("Key #3 not found, stopping parse of steam config");
-                    return paths;
-                }
-
-                try {
-                    paths.Add(root.BaseInstallFolder_4.Value.ToString());
-                }
-                catch (KeyNotFoundException) {
-                    Logger.Debug("Key #4 not found, stopping parse of steam config");
-                    return paths;
-                }
-
-                try {
-                    paths.Add(root.BaseInstallFolder_5.Value.ToString());
-                }
-                catch (KeyNotFoundException) {
-                    Logger.Debug("Key #5 not found, stopping parse of steam config");
-                    return paths;
+                for (int i = 1; i < 8; i++) {
+                    try {
+                        paths.Add(root[$"{i}"].path.ToString());
+                    }
+                    catch (KeyNotFoundException) {
+                        //Logger.Debug($"Key #{i} not found, stopping parse of steam config");
+                        return paths;
+                    }
                 }
             }
             return paths;
@@ -106,7 +76,7 @@ namespace IAGrim {
             // Works for detecting Prison Architect
             string gog = @"Software\Wow6432Node\GOG.com\Games";
             using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(gog)) {
-                Logger.Debug("Looking for Grim Dawn GOG install..");
+                // Logger.Debug("Looking for Grim Dawn GOG install..");
                 if (registryKey != null) {
                     foreach (string s in registryKey.GetSubKeyNames()) {
                         using (RegistryKey gameKey = Registry.LocalMachine.OpenSubKey(Path.Combine(gog, s))) {
@@ -130,7 +100,7 @@ namespace IAGrim {
                         }
                     }
                 }
-                Logger.Debug("Grim Dawn GOG install not found..");
+                // Logger.Debug("Grim Dawn GOG install not found..");
             }
 
 
@@ -232,7 +202,7 @@ namespace IAGrim {
                     var steamPath = GetSteamDirectory();
                     var locations =
                         GetGrimFolderFromSteamLibrary(
-                            ExtractSteamLibraryPaths(Path.Combine(steamPath, "config", "config.vdf")));
+                            ExtractSteamLibraryPaths(Path.Combine(steamPath, "config", "libraryfolders.vdf")));
                     if (locations.Count > 0)
                         location = locations[0];
                 }
@@ -269,7 +239,7 @@ namespace IAGrim {
 
             try {
                 var steamPath = GetSteamDirectory();
-                GetGrimFolderFromSteamLibrary(ExtractSteamLibraryPaths(Path.Combine(steamPath, "config", "config.vdf")))
+                GetGrimFolderFromSteamLibrary(ExtractSteamLibraryPaths(Path.Combine(steamPath, "config", "libraryfolders.vdf")))
                     .ForEach(loc => locations.Add(loc));
             }
             catch (Exception ex) {

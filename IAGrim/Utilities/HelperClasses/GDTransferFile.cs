@@ -20,9 +20,9 @@ namespace IAGrim.Utilities.HelperClasses {
 
         
         public override string ToString() {
-            string text = string.IsNullOrEmpty(Mod) ? GlobalSettings.Language.GetTag("iatag_ui_vanilla") : Mod;
+            string text = Mod;
             if (this.IsHardcore)
-                return $"{text}{GlobalSettings.Language.GetTag("iatag_ui_hc")}";
+                return $"{text} (HC)";
             else
                 return text;
         }

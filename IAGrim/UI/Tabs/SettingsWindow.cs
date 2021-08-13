@@ -130,16 +130,8 @@ namespace IAGrim.UI {
 
 
         private void buttonLanguageSelect_Click(object sender, EventArgs e) {
-            new LanguagePackPicker(_itemTagDao, GrimDawnDetector.GetGrimLocation(), _parsingService)
-                .ShowDialog();
-
-            _itemViewUpdateTrigger?.Invoke();
         }
 
-
-
-        private void buttonAdvancedSettings_Click(object sender, EventArgs e) {
-        }
 
     }
 }

@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using IAGrim.Database.Model;
 using log4net;
-using StatTranslator;
 
 namespace IAGrim.Utilities {
 

@@ -17,8 +17,8 @@ namespace IAGrim.UI.Service {
         public List<ListViewItem> GetGrimDawnInstalls(IEnumerable<string> paths) {
             List<ListViewItem> entries = new List<ListViewItem>();
 
-            var tagVanilla = GlobalSettings.Language.GetTag("iatag_ui_vanilla");
-            var tagVanillaXpac = GlobalSettings.Language.GetTag("iatag_ui_vanilla_xpac");
+            var tagVanilla = "Vanilla";
+            var tagVanillaXpac = "Expansions";
 
             foreach (var gdPath in paths) {
                 if (!string.IsNullOrEmpty(gdPath) && Directory.Exists(gdPath)) {
@@ -38,7 +38,7 @@ namespace IAGrim.UI.Service {
         public List<ListViewItem> GetInstalledMods(IEnumerable<string> paths) {
             List<ListViewItem> entries = new List<ListViewItem>();
             const string TheCrucibleDLC = "survivalmode";
-            var noModSelected = GlobalSettings.Language.GetTag("iatag_ui_none");
+            var noModSelected = "None";
 
             ListViewItem empty = new ListViewItem(noModSelected);
             empty.SubItems.Add("-");

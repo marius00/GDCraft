@@ -54,7 +54,6 @@ namespace IAGrim.UI {
 
                 var tags = new []{ "iatag_ui_nagscreen1_button", "iatag_ui_nagscreen2_button", "iatag_ui_nagscreen3_button", "iatag_ui_nagscreen4_button", "iatag_ui_nagscreen5_button" };
                 buttonNoThanks.Tag = tags[new Random().Next(tags.Length)];
-                LocalizationLoader.ApplyLanguage(Controls, GlobalSettings.Language);
             }
             else {
                 _nagDelay = -1;

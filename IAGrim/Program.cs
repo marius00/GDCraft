@@ -11,6 +11,7 @@ using log4net;
 using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -111,14 +112,6 @@ namespace IAGrim {
                     Properties.Settings.Default.Upgrade();
                     Properties.Settings.Default.CallUpgrade = false;
                     Logger.Info("Settings upgraded..");
-
-#if !DEBUG
-
-                    // If we don't also update item stats, a lot of whining will ensue.
-                    // This accounts for most database updates (new fields added that needs to get populated etc)
-                    UpdatingPlayerItemsScreen x = new UpdatingPlayerItemsScreen(playerItemDao);
-                    x.ShowDialog();
-#endif
 
                 }
             } catch (Exception ex) {
@@ -231,14 +224,6 @@ namespace IAGrim {
             Application.SetCompatibleTextRenderingDefault(false);
             Logger.Info("Visual styles enabled..");
             UpgradeSettings();
-
-            var language = GlobalSettings.Language as StatTranslator.EnglishLanguage;
-            if (language != null) {
-                foreach (var tag in itemTagDao.GetClassItemTags()) {
-                    language.SetTagIfMissing(tag.Tag, tag.Name);
-                }
-            }
-
 
             using (CefBrowserHandler browser = new CefBrowserHandler()) {
                 _mw = new MainWindow(browser, 

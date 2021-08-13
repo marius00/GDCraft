@@ -191,7 +191,6 @@ namespace IAGrim.UI {
             
 #if !DEBUG
             ThreadPool.QueueUserWorkItem(m => ExceptionReporter.ReportUsage());
-            CheckForUpdates();
 #endif
 
             int min = 1000 * 60;
@@ -209,15 +208,7 @@ namespace IAGrim.UI {
 
 
 
-            LocalizationLoader.ApplyLanguage(Controls, GlobalSettings.Language);
-
             Application.AddMessageFilter(new MousewheelMessageFilter());
-
-
-            var titleTag = GlobalSettings.Language.GetTag("iatag_ui_itemassistant");
-            if (!string.IsNullOrEmpty(titleTag)) {
-                this.Text += $" - {titleTag}";
-            }
 
             var costCalculationService = new CostCalculationService(_stashManager);
             _jsonBindingService = new JsonBindingService(_stashManager, JsBind, _cefBrowserHandler, new RecipeService(_databaseItemDao), costCalculationService);

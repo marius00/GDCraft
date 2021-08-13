@@ -78,22 +78,6 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
 
                 tracker.Increment();
             }
-
-            // User override for some tags
-            var localizationLoader = new LocalizationLoader();
-            if (!string.IsNullOrEmpty(localizationFile) && localizationLoader.Load(localizationFile)) {
-                Logger.Debug($"Loading tags from {localizationFile}");
-
-                var tags = localizationLoader.GetItemTags();
-                foreach (var tag in tags) {
-                    _tagAccumulator.Add(tag.Tag, tag.Name);
-                }
-
-                Logger.Debug($"Loaded {tags.Count} tags from {localizationFile}");
-                tracker.Increment();
-            }
-
-            tracker.Finalize();
         }
 
 

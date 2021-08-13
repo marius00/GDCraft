@@ -34,7 +34,6 @@
             this.buttonDonate = new FirefoxButton();
             this.panelBox1 = new PanelBox();
             this.buttonMigratePostgres = new FirefoxButton();
-            this.buttonLanguageSelect = new FirefoxButton();
             this.buttonViewLogs = new FirefoxButton();
             this.contextMenuStrip1.SuspendLayout();
             this.panelBox5.SuspendLayout();
@@ -125,7 +124,7 @@
             this.buttonDonate.EnabledCalc = true;
             this.buttonDonate.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.buttonDonate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(68)))), ((int)(((byte)(80)))));
-            this.buttonDonate.Location = new System.Drawing.Point(19, 127);
+            this.buttonDonate.Location = new System.Drawing.Point(19, 89);
             this.buttonDonate.Name = "buttonDonate";
             this.buttonDonate.Size = new System.Drawing.Size(192, 32);
             this.buttonDonate.TabIndex = 5;
@@ -137,7 +136,6 @@
             // 
             this.panelBox1.Controls.Add(this.buttonDonate);
             this.panelBox1.Controls.Add(this.buttonMigratePostgres);
-            this.panelBox1.Controls.Add(this.buttonLanguageSelect);
             this.panelBox1.Controls.Add(this.buttonViewLogs);
             this.panelBox1.Font = new System.Drawing.Font("Segoe UI Semibold", 20F);
             this.panelBox1.HeaderHeight = 40;
@@ -159,18 +157,6 @@
             this.buttonMigratePostgres.Name = "buttonMigratePostgres";
             this.buttonMigratePostgres.Size = new System.Drawing.Size(0, 0);
             this.buttonMigratePostgres.TabIndex = 0;
-            // 
-            // buttonLanguageSelect
-            // 
-            this.buttonLanguageSelect.EnabledCalc = true;
-            this.buttonLanguageSelect.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.buttonLanguageSelect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(68)))), ((int)(((byte)(80)))));
-            this.buttonLanguageSelect.Location = new System.Drawing.Point(19, 89);
-            this.buttonLanguageSelect.Name = "buttonLanguageSelect";
-            this.buttonLanguageSelect.Size = new System.Drawing.Size(192, 32);
-            this.buttonLanguageSelect.TabIndex = 6;
-            this.buttonLanguageSelect.Text = "Language Select";
-            this.buttonLanguageSelect.Click += new System.EventHandler(this.buttonLanguageSelect_Click);
             // 
             // buttonViewLogs
             // 
@@ -221,7 +207,6 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-        private FirefoxButton buttonLanguageSelect;
         private FirefoxButton buttonMigratePostgres;
         private FirefoxButton buttonViewLogs;
     }

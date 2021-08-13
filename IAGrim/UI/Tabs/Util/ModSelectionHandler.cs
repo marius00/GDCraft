@@ -59,26 +59,6 @@ namespace IAGrim.UI.Tabs.Util {
         }
 
 
-        public void ConfigureModFilter() {
-            _cbModFilter.DropDown += modFilter_DropDown;
-            modFilter_DropDown(null, null);
-            if (_cbModFilter.Items.Count == 0) {
-                _setStatus(GlobalSettings.Language.GetTag("iatag_stash_not_found"));
-                Logger.Warn("Could not locate any stash files");
-            }
-            else {
-
-
-                foreach (var elem in _cbModFilter.Items) {
-                    ComboBoxItemToggle item = elem as ComboBoxItemToggle;
-                    if (item != null && item.Enabled) {
-                        _cbModFilter.SelectedItem = item;
-                        break;
-                    }
-                }
-            }
-        }
-
 
         public GDTransferFile[] GetAvailableModSelection() {
             var mods = GlobalPaths.TransferFiles;
