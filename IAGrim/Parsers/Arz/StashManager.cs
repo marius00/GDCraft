@@ -7,19 +7,16 @@ using IAGrim.Utilities;
 
 namespace IAGrim.Parsers.Arz {
     internal class StashManager {
-        private string _selectedStashFile = GlobalPaths.TransferFiles.FirstOrDefault()?.Filename ?? ""; // TODO: Some kind of setting to change this, both cloud and non-cloud
+        private string _selectedStashFile = GlobalPaths.TransferFiles.FirstOrDefault()?.Filename ?? "";
         public List<Item> UnlootedItems => UpdateUnlooted(_selectedStashFile);
 
         public event EventHandler StashUpdated;
 
-        public StashManager(
-            ) {
+        public StashManager() {}
 
-            string path = GlobalPaths.SavePath;
-
-            if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
-                UpdateUnlooted(path);
-            }
+        public void SetTransferFile(string filename) {
+            if (!string.IsNullOrEmpty(filename))
+                _selectedStashFile = filename;
         }
 
 

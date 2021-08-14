@@ -59,13 +59,18 @@ function ____callbackSetIngredients(dataset) {
     // Keep trying to set the value until the tree is finished initializing
     // Look into using the 'ready.jstree' event
 }
+
+var lastRecord = '';
 function updateView(record) {
     data.requestRecipeIngredients(record, '____callbackSetIngredients');
+    lastRecord = record;
 }
+
 
 function ____callbackSetItemList(recipes) {
     console.log("Recipes", recipes);
     console.table(recipes.misc);
+
 
     for (let idx = 0; idx < recipes.relics.length; idx++) {
         const relic = recipes.relics[idx];
@@ -120,6 +125,33 @@ let annoyingQuickfixTimeout = setInterval(() => {
 $(document).ready(function () {
     ko.applyBindings(componentCraftVM, document.getElementById('assembledItem'));
     ko.applyBindings(itemSumVM, document.getElementById('itemSum'));
+
+    let transferFiles = JSON.parse(data.transferFiles);
+    for (i = 0; i < transferFiles.length; i++) {
+        console.log(i);
+        let f = transferFiles[i];
+        let mode = f.mode || "Vanilla";
+        let hcsc = f.isHardcore ? "HC" : "SC";
+        let loc = f.isCloud ? "Cloud" : "Local";
+        let label = `${mode} (${hcsc}) (${loc})`;
+
+        if (i === 0)
+            $('#transferFileSelect').append($(`<option selected value="${f.filename}">${label}</option>`));
+        else
+            $('#transferFileSelect').append($(`<option value="${f.filename}">${label}</option>`));
+    }
+    data.setTransferFile($('#transferFileSelect').val());
+
+
+
+    $('#transferFileSelect').change(function () {
+        $('#recipeSelect').val('').trigger('chosen:updated');
+        $('#componentSelect').val('').trigger('chosen:updated');
+        $('#relicSelect').val('').trigger('chosen:updated');
+        data.setTransferFile($('#transferFileSelect').val());
+        updateView(lastRecord);
+    });
+
 });
 
 

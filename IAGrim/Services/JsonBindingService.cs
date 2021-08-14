@@ -16,22 +16,23 @@ namespace IAGrim.Services {
         private readonly CostCalculationService _costCalculationService;
         private readonly string _previousMod = string.Empty;
         private readonly JSWrapper _jsBind;
-
+        private readonly StashManager _stashManager;
         private readonly CefBrowserHandler _browser;
 
         private string _previousRecipe;
         private string _previousCallback;
+        
 
 
 
         public JsonBindingService(StashManager stashManager, JSWrapper jsBind, CefBrowserHandler browser, RecipeService recipeService, CostCalculationService costCalculationService) {
+            _stashManager = stashManager;
             this._jsBind = jsBind;
             _browser = browser;
             _recipeService = recipeService;
             _costCalculationService = costCalculationService;
 
             // 
-            ItemHtmlWriter.ToJsonSerializeable();
 
             // Return the ingredients for a given recipe
             jsBind.OnRequestRecipeIngredients += (sender, args) => {
@@ -43,6 +44,12 @@ namespace IAGrim.Services {
                 _previousCallback = recipeArgument?.Callback;
                 _previousRecipe = recipeArgument?.RecipeRecord;
                 _browser.JsCallback(recipeArgument?.Callback, jsBind.Serialize(ingredients));
+            };
+
+            jsBind.OnSetTransferFile += (sender, args) => {
+                var arg = args as SetTransferFile;
+                _stashManager.SetTransferFile(arg?.Filename);
+
             };
 
 

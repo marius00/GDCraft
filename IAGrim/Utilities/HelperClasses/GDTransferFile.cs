@@ -14,7 +14,7 @@ namespace IAGrim.Utilities.HelperClasses {
         public string Mod { get; set; }
         public virtual bool Enabled { get; set; }
 
-        public bool IsExpansion1 { get; set; }
+        public bool IsCloud { get; set; }
 
         public virtual DateTime LastAccess { get; set; }
 

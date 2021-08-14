@@ -72,41 +72,47 @@ namespace IAGrim.Utilities {
         /// </summary>
         public static List<GDTransferFile> TransferFiles {
             get {
-                string documents = SavePath;
+                List<string> paths = new List<string>() { SavePath };
+                var steamPath = GrimDawnDetector.FindSteamGrimDawnUserdata();
+                if (!string.IsNullOrEmpty(steamPath))
+                    paths.Add(steamPath);
+                
+                foreach (var currentPath in paths) {
+                    if (Directory.Exists(currentPath)) {
 
-                if (Directory.Exists(documents)) {
-
-                    // Generate a list of the interesting files
-                    List<string> files = new List<string>();
-                    foreach (string filename in new string[] { "transfer.gst", "transfer.gsh" }) {
-                        string vanilla = Path.Combine(documents, filename);
-                        if (File.Exists(vanilla) && !ParsedFiles.Contains(vanilla)) {
-                            files.Add(vanilla);
-                        }
+                        // Generate a list of the interesting files
+                        List<string> files = new List<string>();
+                        foreach (string filename in new string[] {"transfer.gst", "transfer.gsh"}) {
+                            string vanilla = Path.Combine(currentPath, filename);
+                            if (File.Exists(vanilla) && !ParsedFiles.Contains(vanilla)) {
+                                files.Add(vanilla);
+                            }
 
 
-                        foreach (var possibleMod in Directory.GetDirectories(documents)) {
-                            string mod = Path.Combine(possibleMod, filename);
-                            if (File.Exists(mod) && !ParsedFiles.Contains(mod)) {
-                                files.Add(mod);
+                            foreach (var possibleMod in Directory.GetDirectories(currentPath)) {
+                                string mod = Path.Combine(possibleMod, filename);
+                                if (File.Exists(mod) && !ParsedFiles.Contains(mod)) {
+                                    files.Add(mod);
+                                }
                             }
                         }
-                    }
 
 
-                    foreach (string potential in files) {
-                        string fn;
-                        if (StashManager.TryGetModLabel(potential, out fn)) {
-                            ParsedFiles.Add(potential);
-                            var lastAccess = File.GetLastWriteTime(potential);
-                            TransferFilesCache.Add(new GDTransferFile {
-                                Filename = potential,
-                                Mod = fn,
-                                IsHardcore = IsHardcore(potential),
-                                LastAccess = lastAccess
-                            });
+                        foreach (string potential in files) {
+                            string fn;
+                            if (StashManager.TryGetModLabel(potential, out fn)) {
+                                ParsedFiles.Add(potential);
+                                var lastAccess = File.GetLastWriteTime(potential);
+                                TransferFilesCache.Add(new GDTransferFile {
+                                    Filename = potential,
+                                    Mod = fn,
+                                    IsHardcore = IsHardcore(potential),
+                                    LastAccess = lastAccess,
+                                    IsCloud = !potential.Contains(SavePath)
+                                });
+                            }
+
                         }
-
                     }
                 }
 

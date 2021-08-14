@@ -249,6 +249,7 @@
     <Compile Include="Theme\ScrollPanelMessageFilter.cs" />
     <Compile Include="Theme\Theme.cs" />
     <Compile Include="UI\Misc\HtmlTranslation.cs" />
+    <Compile Include="UI\Misc\SetTransferFile.cs" />
     <Compile Include="UI\Misc\RequestRecipeArgument.cs" />
     <Compile Include="UI\Misc\TextboxHoverFocusHighlight.cs" />
     <Compile Include="UI\Model\ListViewEntry.cs" />

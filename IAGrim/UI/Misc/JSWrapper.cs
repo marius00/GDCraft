@@ -14,6 +14,7 @@ namespace IAGrim.UI.Misc {
 
         public event EventHandler OnRequestRecipeList;
         public event EventHandler OnRequestRecipeIngredients;
+        public event EventHandler OnSetTransferFile;
 
         public void requestRecipeIngredients(string recipeRecord, string callback) {
             OnRequestRecipeIngredients?.Invoke(this, new RequestRecipeArgument {
@@ -27,6 +28,15 @@ namespace IAGrim.UI.Misc {
                 Callback = callback
             });
         }
+
+        public void setTransferFile(string file) {
+            OnSetTransferFile?.Invoke(this, new SetTransferFile {
+                Filename = file
+            });
+        }
+
+        public string TransferFiles => Serialize(GlobalPaths.TransferFiles);
+
 
         public JSWrapper() {
             _settings = new JsonSerializerSettings {

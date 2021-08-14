@@ -89,11 +89,13 @@ namespace IAGrim {
 #endif
             //ParsingUIBackgroundWorker tmp = new ParsingUIBackgroundWorker();
 
-            Guid guid = new Guid("{F3693953-C090-4F93-86A2-B98AB96A9368}");
+            Guid guid = new Guid("{F3693953-AAAA-AAAA-86A2-B98AB96A9368}");
             using (SingleInstance singleInstance = new SingleInstance(guid)) {
                 if (singleInstance.IsFirstInstance) {
                     Logger.Info("Calling run..");
                     using (ThreadExecuter threadExecuter = new ThreadExecuter()) {
+
+                        ItemHtmlWriter.ToJsonSerializeable();
                         Run(threadExecuter);
                     }
                 } else {
@@ -144,33 +146,6 @@ namespace IAGrim {
 
         // TODO: This creates another session instance, should be executed inside the ThreadExecuter
         private static void PrintStartupInfo(SessionFactory factory) {
-            if (Properties.Settings.Default.StashToLootFrom == 0) {
-                Logger.Info("IA is configured to loot from the last stash page");
-            }
-            else {
-                Logger.Info($"IA is configured to loot from stash page #{Properties.Settings.Default.StashToLootFrom}");
-            }
-            if (Properties.Settings.Default.StashToDepositTo == 0) {
-                Logger.Info("IA is configured to deposit to the second-to-last stash page");
-            }
-            else {
-                Logger.Info($"IA is configured to deposit to stash page #{Properties.Settings.Default.StashToDepositTo}");
-            }
-
-
-            if (Properties.Settings.Default.BuddySyncEnabled)
-                Logger.Info($"Buddy items is enabled with user id {Properties.Settings.Default.BuddySyncUserIdV2}");
-            else
-                Logger.Info("Buddy items is disabled");
-
-            if (Properties.Settings.Default.ShowRecipesAsItems)
-                Logger.Info("Show recipes as items is enabled");
-            else
-                Logger.Info("Show recipes as items is disabled");
-
-            Logger.Info("Transfer to any mod is " + (Properties.Settings.Default.TransferAnyMod ? "enabled" : "disabled"));
-            Logger.Info("Experimental updates is " + (Properties.Settings.Default.SubscribeExperimentalUpdates ? "enabled" : "disabled"));
-            Logger.Info($"Instaloot is set to {Properties.Settings.Default.InstalootSetting} ({(InstalootSettingType)Properties.Settings.Default.InstalootSetting})");
 
             if (Properties.Settings.Default.UserNeverWantsBackups)
                 Logger.Warn("You have opted out of backups");

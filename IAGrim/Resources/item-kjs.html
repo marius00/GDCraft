@@ -19,9 +19,13 @@
     <span id="componentAssemblerPage">&nbsp;</span>
     <div></div>
     <div id="chosen-dropdown-controls">
-        
-        
-        <select data-bind='attr: {"data-placeholder": $root.iatag_html_choose_a_relic}' class="chosen-select" style="width: 200px;" id="relicSelect" autocomplete="off">
+
+        <select data-placeholder="Choose mod / transfer file" class="chosen-select" style="width: 200px;" id="transferFileSelect" autocomplete="off">
+            <option></option>
+        </select>
+        <br/>
+
+        <select data-placeholder="Choose a relic recipe" class="chosen-select" style="width: 200px;" id="relicSelect" autocomplete="off">
             <option></option>
         </select>
         <select data-bind='attr: {"data-placeholder": $root.iatag_html_choose_a_recipe}' class="chosen-select" style="width: 200px;" id="recipeSelect" autocomplete="off">
