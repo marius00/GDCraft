@@ -1,4 +1,3 @@
-# Grim Dawn Item Assistant
+# GDCraft
 
-
-For a binary download, see https://www.nexusmods.com/grimdawn/mods/43/
+A stripped down version of Item Assistant with crafting functionality
