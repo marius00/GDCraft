@@ -38,12 +38,9 @@ namespace IAGrim.UI {
 
 
         private Timer _timerReportUsage;
-
-        private readonly IItemTagDao _itemTagDao;
+        
         private readonly IDatabaseItemDao _databaseItemDao;
-        private readonly IDatabaseItemStatDao _databaseItemStatDao;
         private readonly IDatabaseSettingDao _databaseSettingDao;
-        private readonly ArzParser _arzParser;
         private readonly ParsingService _parsingService;
 
         private readonly Stopwatch _reportUsageStatistics;
@@ -55,7 +52,8 @@ namespace IAGrim.UI {
              IDatabaseItemStatDao databaseItemStatDao,
              IDatabaseSettingDao databaseSettingDao,
              ArzParser arzParser,
-            IItemTagDao itemTagDao, ParsingService parsingService) {
+            IItemTagDao itemTagDao, 
+            ParsingService parsingService) {
             _cefBrowserHandler = browser;
             InitializeComponent();
             FormClosing += MainWindow_FormClosing;
@@ -64,10 +62,7 @@ namespace IAGrim.UI {
             _reportUsageStatistics.Start();
 
             _databaseItemDao = databaseItemDao;
-            _databaseItemStatDao = databaseItemStatDao;
             _databaseSettingDao = databaseSettingDao;
-            _arzParser = arzParser;
-            _itemTagDao = itemTagDao;
             _parsingService = parsingService;
         }
 
@@ -178,13 +173,9 @@ namespace IAGrim.UI {
 
             addAndShow(
                 new SettingsWindow(
-                    _itemTagDao,
                     _tooltipHelper,
-                    () => { },
                     _databaseSettingDao,
-                    _databaseItemDao,
-                    _arzParser,
-                    _parsingService
+                    _databaseItemDao
                 ),
                 settingsPanel);
 

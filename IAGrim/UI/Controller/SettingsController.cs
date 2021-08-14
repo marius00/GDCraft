@@ -223,7 +223,7 @@ namespace IAGrim.UI.Controller {
 
         public void OpenLogFolder() {
             String appdata = Environment.GetEnvironmentVariable("LocalAppData");
-            string dir = Path.Combine(appdata, "EvilSoft", "IAGD");
+            string dir = Path.Combine(appdata, "EvilSoft", "GDCraft");
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             Process.Start("file://" + dir);

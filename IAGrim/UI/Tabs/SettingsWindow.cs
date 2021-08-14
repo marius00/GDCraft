@@ -22,30 +22,19 @@ namespace IAGrim.UI {
     partial class SettingsWindow : Form {
         private ISettingsController _controller = new SettingsController();
         private TooltipHelper _tooltipHelper;
-
-        private readonly Action _itemViewUpdateTrigger;
+        
         private readonly IDatabaseSettingDao _settingsDao;
         private readonly IDatabaseItemDao _itemDao;
-        private readonly ArzParser _parser;
-        private readonly IItemTagDao _itemTagDao;
-        private readonly ParsingService _parsingService;
+
 
         public SettingsWindow(
-            IItemTagDao itemTagDao,
             TooltipHelper tooltipHelper, 
-            Action itemViewUpdateTrigger, 
             IDatabaseSettingDao settingsDao, 
-            IDatabaseItemDao itemDao,
-            ArzParser parser,
-            ParsingService parsingService) {            
+            IDatabaseItemDao itemDao) {            
             InitializeComponent();
             this._tooltipHelper = tooltipHelper;
-            this._itemViewUpdateTrigger = itemViewUpdateTrigger;
             this._settingsDao = settingsDao;
             this._itemDao = itemDao;
-            this._parser = parser;
-            _parsingService = parsingService;
-            _itemTagDao = itemTagDao;
 
 
             _controller.LoadDefaults();
@@ -77,33 +66,12 @@ namespace IAGrim.UI {
                 this.labelLastUpdated.ForeColor = Color.Red;
 
         }
-
-        private void buttonViewBackups_Click(object sender, EventArgs e) {
-            _controller.OpenDataFolder();
-        }
+        
 
         private void buttonViewLogs_Click(object sender, EventArgs e) {
             _controller.OpenLogFolder();
         }
 
-        private void buttonDeveloper_Click(object sender, EventArgs e) {
-            System.Diagnostics.Process.Start("http://www.grimdawn.com/forums/member.php?u=17888");
-        }
-
-        private void buttonForum_Click(object sender, EventArgs e) {
-            System.Diagnostics.Process.Start("http://www.grimdawn.com/forums/showthread.php?t=35240");
-        }
-
-
-        private void radioRelease_CheckedChanged(object sender, EventArgs e) {
-            Properties.Settings.Default.SubscribeExperimentalUpdates = false;
-            Properties.Settings.Default.Save();
-        }
-
-        private void radioBeta_CheckedChanged(object sender, EventArgs e) {
-            Properties.Settings.Default.SubscribeExperimentalUpdates = true;
-            Properties.Settings.Default.Save();
-        }
 
         // create bindings and stick these into its own settings class
         // unit testable
@@ -116,11 +84,11 @@ namespace IAGrim.UI {
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                System.Diagnostics.Process.Start("https://discord.gg/PJ87Ewa");
+                System.Diagnostics.Process.Start("https://discord.gg/5wuCPbB");
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
-            Clipboard.SetText("https://discord.gg/PJ87Ewa");
+            Clipboard.SetText("https://discord.gg/5wuCPbB");
             _tooltipHelper.ShowTooltipForControl("Copied to clipboard", linkLabel1, TooltipHelper.TooltipLocation.TOP);
         }
 
