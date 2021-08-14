@@ -50,7 +50,7 @@ function updateTree() {
 }
 
 function ____callbackSetIngredients(dataset) {
-
+    console.log("Ingredientes", dataset);
     componentCraftVM.items(dataset);
     itemSumVM.sum([]);
     updateTree();

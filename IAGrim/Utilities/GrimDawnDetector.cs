@@ -198,26 +198,7 @@ namespace IAGrim {
                 return location;
 
             try {
-                try {
-                    var steamPath = GetSteamDirectory();
-                    var locations =
-                        GetGrimFolderFromSteamLibrary(
-                            ExtractSteamLibraryPaths(Path.Combine(steamPath, "config", "libraryfolders.vdf")));
-                    if (locations.Count > 0)
-                        location = locations[0];
-                }
-                catch (Exception ex) {
-                    Logger.Warn(ex.Message);
-                    Logger.Warn(ex.StackTrace);
-                }
-
-                location = FindGogByRegistry();
-                if (!string.IsNullOrEmpty(location))
-                    return location;
-
-                location = FindByWindow();
-                if (!string.IsNullOrEmpty(location))
-                    return location;
+                location = GetGrimLocations().FirstOrDefault();
             }
 
             // Cache the location
@@ -228,6 +209,7 @@ namespace IAGrim {
 
             return string.Empty;
         }
+
         public static ISet<string> GetGrimLocations() {
             var locations = new HashSet<string>();
 

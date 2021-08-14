@@ -160,47 +160,8 @@
     $(document).ready(function () {
         ko.applyBindings(new TabControlViewModel(data.translation), document.getElementById('chosen-dropdown-controls'));
         isLoading(false);
-
-        // Load items on scroll, if on the items page
-        window.onscroll = function (ev) {
-            if ((window.innerHeight * 1.5 + window.pageYOffset) >= document.body.offsetHeight) {
-                if ($('#tab-items').is(":visible")) {
-                    data.RequestMoreItems();
-                }
-            }
-        };
-
     });
-    function addData() {
-        var items = JSON.parse(data.Items);
-        VM.Items.push.apply(VM.Items, items);
-        if (VM.Items().length < 30 && !data.ItemSourceExhausted) {
-            data.RequestMoreItems();
-        }
 
-        console.log(`New items added, total is now ${VM.Items().length}`);
-        isLoading(false);
-    }
-
-    function refreshData() {
-        console.log(`Got ${data.Items.length} new items`);
-        VM.Items(JSON.parse(data.Items));
-
-
-        if (VM.Items().length < 30 && !data.ItemSourceExhausted) {
-            data.RequestMoreItems();
-        } else {
-            try {
-                if (!$('#tab-items').is(":visible")) {
-                    openTab(event, 'tab-items');
-                }
-            } catch (exception) {
-                console.warn(exception);
-            }
-        }
-
-        isLoading(false);
-    }
 
 </script>
 
