@@ -49,14 +49,11 @@ namespace IAGrim {
                 Thread.CurrentThread.Name = "Main";
 
             Logger.Info("Starting IA:GD..");
-            ExceptionReporter.UrlCrashreport = "http://ribbs.dreamcrash.org/iagd/crashreport.php"; 
-            ExceptionReporter.UrlStats = "http://ribbs.dreamcrash.org/iagd/stats.php";
-#if !DEBUG
-            ExceptionReporter.LogExceptions = true;
-#endif
+            ExceptionReporter.UrlStats = "https://webstats.evilsoft.net/report/gdcraft";
+
 
             Logger.Info("Starting exception monitor for bug reports.."); // Phrased this way since people took it as a 'bad' thing.
-            Logger.Debug("Crash reports can be seen at http://ribbs.dreamcrash.org/iagd/logs.html");
+            Logger.Debug($"Crash reports can be seen at https://webstats.evilsoft.net/gdcraft");
             ExceptionReporter.EnableLogUnhandledOnThread();
 
 
@@ -119,7 +116,6 @@ namespace IAGrim {
             } catch (Exception ex) {
                 Logger.Warn(ex.Message);
                 Logger.Warn(ex.StackTrace);
-                ExceptionReporter.ReportException(ex);
             }
 
         }
@@ -140,7 +136,6 @@ namespace IAGrim {
                     _mw.Invoke(restoreWindow);
                 }
             } catch (Exception ex) {
-                ExceptionReporter.ReportException(ex, "singleInstance_ArgumentsReceived");
             }
         }
 

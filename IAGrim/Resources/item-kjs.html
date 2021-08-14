@@ -28,10 +28,10 @@
         <select data-placeholder="Choose a relic recipe" class="chosen-select" style="width: 200px;" id="relicSelect" autocomplete="off">
             <option></option>
         </select>
-        <select data-bind='attr: {"data-placeholder": $root.iatag_html_choose_a_recipe}' class="chosen-select" style="width: 200px;" id="recipeSelect" autocomplete="off">
+        <select data-placeholder="Choose a recipe" class="chosen-select" style="width: 200px;" id="recipeSelect" autocomplete="off">
             <option></option>
         </select>
-        <select data-bind='attr: {"data-placeholder": $root.iatag_html_choose_a_component}' class="chosen-select" style="width: 200px;" id="componentSelect" autocomplete="off">
+        <select data-placeholder="Choose a component" class="chosen-select" style="width: 200px;" id="componentSelect" autocomplete="off">
             <option></option>
         </select>
     </div>
@@ -53,7 +53,7 @@
         </div>
 
         <div id="itemSum">
-            <b data-bind="visible: sum().length > 0, text: $root.iatag_html_crafting_lacking">You are currently lacking:</b>
+            <b data-bind="visible: sum().length > 0">You are currently lacking:</b>
             <div data-bind="foreach: sum">
                 <img data-bind='attr: {"src": icon}' />
                 <span data-bind='text: count + "x " + name'></span> <br />
