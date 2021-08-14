@@ -1,27 +1,14 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Permissions;
-using System.Threading;
-using System.Windows.Forms;
-using EvilsoftCommons.Exceptions;
-using IAGrim.Database;
-using IAGrim.Database.Interfaces;
-using IAGrim.Properties;
-using IAGrim.Services;
 using IAGrim.StashFile;
-using IAGrim.UI;
 using IAGrim.Utilities;
-using log4net;
-using Timer = System.Timers.Timer;
 
 namespace IAGrim.Parsers.Arz {
     internal class StashManager {
-        public List<Item> UnlootedItems => _unlootedItems.ToList();
-        private ConcurrentBag<Item> _unlootedItems = new ConcurrentBag<Item>();
-        //private bool _hasLootedItemsOnceThisSession = false;
+        private string _selectedStashFile = GlobalPaths.TransferFiles.FirstOrDefault()?.Filename ?? ""; // TODO: Some kind of setting to change this, both cloud and non-cloud
+        public List<Item> UnlootedItems => UpdateUnlooted(_selectedStashFile);
 
         public event EventHandler StashUpdated;
 
@@ -36,18 +23,19 @@ namespace IAGrim.Parsers.Arz {
         }
 
 
-        public void UpdateUnlooted(string filename) {
+        public List<Item> UpdateUnlooted(string filename) {
             GDCryptoDataBuffer pCrypto = new GDCryptoDataBuffer(DataBuffer.ReadBytesFromDisk(filename));
+            List<Item> unlootedLocal = new List<Item>();
 
             Stash stash = new Stash();
             if (stash.Read(pCrypto)) {
                 // Update the internal listing of unlooted items (in stash tabs)
-                List<Item> unlootedLocal = new List<Item>();
                 foreach (StashTab tab in stash.Tabs) {
                     unlootedLocal.AddRange(tab.Items);
                 }
-                Interlocked.Exchange(ref _unlootedItems, new ConcurrentBag<Item>(unlootedLocal));
             }
+
+            return unlootedLocal;
         }
 
 

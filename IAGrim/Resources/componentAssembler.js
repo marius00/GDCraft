@@ -64,7 +64,7 @@ function updateView(record) {
 }
 
 function ____callbackSetItemList(recipes) {
-    console.log(recipes);
+    console.log("Recipes", recipes);
     console.table(recipes.misc);
 
     for (let idx = 0; idx < recipes.relics.length; idx++) {
