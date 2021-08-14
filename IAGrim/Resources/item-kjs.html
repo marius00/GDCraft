@@ -23,7 +23,7 @@
         <select data-placeholder="Choose mod / transfer file" class="chosen-select" style="width: 200px;" id="transferFileSelect" autocomplete="off">
             <option></option>
         </select>
-        <br/>
+        <br />
 
         <select data-placeholder="Choose a relic recipe" class="chosen-select" style="width: 200px;" id="relicSelect" autocomplete="off">
             <option></option>
@@ -39,7 +39,7 @@
     <script id="formElementNodeTemplate" type="text/html">
         <ul>
             <li data-bind='attr: {"data-num": numRequired, "data-itemname": name, "data-jstree":"{\"selected\": " + (numOwned < numRequired ? "false":"true") + ", \"opened\":" + (isComplete ? "false":"true") + ", \"expanded\":" + (isComplete ? "false":"true") + ", \"icon\":\"" + bitmap + "\"}"}'>
-                
+
                 <span data-bind="text: numOwned"></span>/<span data-bind="text: numRequired" class="padding-right-xs"></span><span data-bind="text: name"></span>
                 <span data-bind="visible: numCraftable > 0">(+<span data-bind="text: numCraftable"></span>)</span>
                 <!-- ko template: { name: 'formElementNodeTemplate',
@@ -72,28 +72,31 @@
     .padding-right-xs {
         padding-right: 3px;
     }
-     div.whatever {
-         display: flex;
-         flex-wrap: wrap;
-     }
-    div.whatever > div {
-        flex-shrink: 1;
-        flex-grow: 0;
+
+    div.whatever {
+        display: flex;
+        flex-wrap: wrap;
     }
+
+        div.whatever > div {
+            flex-shrink: 1;
+            flex-grow: 0;
+        }
+
     #itemSum {
         margin-left: 35px;
     }
-    
+
     .close-magic-sequence {
         position: absolute;
         top: 4px;
         right: 7px;
         cursor: pointer;
     }
-    .close-magic-sequence:hover {
-        text-decoration: underline;
-    }
-    
+
+        .close-magic-sequence:hover {
+            text-decoration: underline;
+        }
 </style>
 
 <h2>
@@ -114,7 +117,7 @@
 
         this.hasClosedMagicSequence = ko.observable(false);
 
-        this.closeMagicSequence = function() {
+        this.closeMagicSequence = function () {
             this.hasClosedMagicSequence(true);
         }
         this.magicSequenceRequired = function () {
@@ -170,8 +173,15 @@
 </script>
 
 <p>
-    Ingredients located in your <u>transfer stash</u> will be included here. <br/>
+    Ingredients located in your <u>transfer stash</u> will be included here. <br />
     Ingredients located on your character(s) or your <u>private</u> stash will not be accounted for.
+</p>
+
+<p>
+    After parsing the Grim Dawn database you may need to restart the tool to update recipes.
+</p>
+<p>
+    If the Grim Dawn install location is not found, start Grim Dawn and it should be automatically detected.
 </p>
 
 

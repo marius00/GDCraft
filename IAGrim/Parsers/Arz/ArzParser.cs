@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using DataAccess;
 using EvilsoftCommons;
 using EvilsoftCommons.Exceptions;
@@ -23,6 +24,7 @@ namespace IAGrim.Parsers.Arz {
         }
 
 
+
         public static void LoadIconsOnly(string grimdawnLocation) {
             Logger.Debug("Icon loading requested");
             {
@@ -36,9 +38,8 @@ namespace IAGrim.Parsers.Arz {
                 }
             }
 
-            var expansionFolder = Path.Combine(grimdawnLocation, "gdx1");
-            if (Directory.Exists(expansionFolder)) {
-                var arcItemsFile = GrimFolderUtility.FindArcFile(expansionFolder, "items.arc");
+            foreach (string path in GrimFolderUtility.GetGrimExpansionFolders(grimdawnLocation)) {
+                var arcItemsFile = GrimFolderUtility.FindArcFile(path, "items.arc");
                 if (!string.IsNullOrEmpty(arcItemsFile)) {
                     Logger.Debug($"Loading expansion icons from {arcItemsFile}");
                     LoadIcons(arcItemsFile);
@@ -46,21 +47,9 @@ namespace IAGrim.Parsers.Arz {
                 else {
                     Logger.Warn("Could not find the expansion, skipping.");
                 }
-            }
 
-            var crucibleFolder = Path.Combine(grimdawnLocation, "mods", "survivalmode");
-            if (Directory.Exists(crucibleFolder)) {
-                var arcItemsFile = GrimFolderUtility.FindArcFile(crucibleFolder, "items.arc");
-                if (!string.IsNullOrEmpty(arcItemsFile)) {
-                    Logger.Debug($"Loading \"The Crucible\" icons from {arcItemsFile}");
-                    LoadIcons(arcItemsFile);
-                }
-                else {
-                    Logger.Warn("Could not find \"The crucible\", skipping.");
-                }
             }
         }
-
 
         private static void LoadIcons(string arcItemsFile) {
             Logger.Info($"Loading item icons from {arcItemsFile}..");
@@ -77,9 +66,16 @@ namespace IAGrim.Parsers.Arz {
                 Logger.Warn($"Item icon file \"{arcItemfile}\" could not be located..");
             }
 
-            DDSImageReader.ExtractItemIcons(arcItemfile, GlobalPaths.StorageFolder);
+            try {
+                DDSImageReader.ExtractItemIcons(arcItemfile, GlobalPaths.StorageFolder);
+            }
+            catch (ArgumentException ex) {
+                // Ideally we'd like to catch the specific exception, but the available log files don't contain the exception name..
+                Logger.Error(ex.Message, ex);
+                MessageBox.Show("Unable to parse icons, ARZ file is corrupted.\nIf you are using steam, please verify the install integrity.", "Corrupted GD installation", MessageBoxButtons.OK);
+            }
         }
-       
+
 
         public void Dispose() {
             _skills.Clear();

@@ -219,17 +219,8 @@ namespace IAGrim {
                     isVanilla = GDPath.Equals(GrimDawnDetector.GetGrimLocation());
                 }
 
-                if (!string.IsNullOrEmpty(GDPath) && Directory.Exists(GDPath)) {
+                PerformIconCheck(databaseSettingDao);
 
-                    var numFiles = Directory.GetFiles(GlobalPaths.StorageFolder).Length;
-                    if (numFiles < 2000) {
-                        Logger.Debug($"Only found {numFiles} in storage, expected ~3200+, parsing item icons.");
-                        ThreadPool.QueueUserWorkItem((m) => ArzParser.LoadIconsOnly(GDPath));
-                    }
-
-                } else {
-                    Logger.Warn("Could not find the Grim Dawn install location");
-                }
 
                 _mw.Visible = false;
                 if (DonateNagScreen.CanNag)
@@ -242,6 +233,43 @@ namespace IAGrim {
             }
 
             Logger.Info("Application ended.");
+        }
+
+
+        static void PerformIconCheck(IDatabaseSettingDao databaseSettingDao) {
+            try {
+                // Load the GD database (or mod, if any)
+                string gdPath = databaseSettingDao.GetCurrentDatabasePath();
+                if (string.IsNullOrEmpty(gdPath) || !Directory.Exists(gdPath)) {
+                    gdPath = GrimDawnDetector.GetGrimLocation();
+                }
+
+                if (!string.IsNullOrEmpty(gdPath) && Directory.Exists(gdPath)) {
+
+                    var numFiles = Directory.GetFiles(GlobalPaths.StorageFolder).Length;
+                    int numFilesExpected = 2100;
+                    if (Directory.Exists(Path.Combine(gdPath, "gdx2"))) {
+                        numFilesExpected += 850;
+                    }
+
+                    if (Directory.Exists(Path.Combine(gdPath, "gdx1"))) {
+                        numFilesExpected += 890;
+                    }
+
+                    if (numFiles < numFilesExpected) {
+                        Logger.Debug($"Only found {numFiles} in storage, expected ~{numFilesExpected}+, parsing item icons.");
+                        ThreadPool.QueueUserWorkItem((m) => ArzParser.LoadIconsOnly(gdPath));
+                    }
+
+                }
+                else {
+                    Logger.Warn("Could not find the Grim Dawn install location");
+                }
+            }
+            catch (Exception ex) {
+                // Keep things moving, if icons are messed up its unfortunate, items should still be accessible.
+                Logger.Warn("Error parsing icons", ex);
+            }
         }
     }
 } 
