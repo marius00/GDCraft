@@ -165,8 +165,12 @@ namespace IAGrim.UI {
 
             var addAndShow = UIHelper.AddAndShow;
 
-
-            addAndShow(new ModsDatabaseConfig(() => { }, _parsingService), modsPanel);
+            var costCalculationService = new CostCalculationService(_stashManager);
+            _jsonBindingService = new JsonBindingService(_stashManager, JsBind, _cefBrowserHandler, new RecipeService(_databaseItemDao), costCalculationService);
+            
+            addAndShow(new ModsDatabaseConfig(() => {
+                _jsonBindingService.JsBind_OnRequestRecipeList(null, null);
+            }, _parsingService), modsPanel);
 
             addAndShow(
                 new SettingsWindow(
@@ -198,8 +202,6 @@ namespace IAGrim.UI {
 
             Application.AddMessageFilter(new MousewheelMessageFilter());
 
-            var costCalculationService = new CostCalculationService(_stashManager);
-            _jsonBindingService = new JsonBindingService(_stashManager, JsBind, _cefBrowserHandler, new RecipeService(_databaseItemDao), costCalculationService);
         }
 
 

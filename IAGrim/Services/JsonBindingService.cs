@@ -58,13 +58,14 @@ namespace IAGrim.Services {
 
 
             // Return the list of recipes
-            jsBind.OnRequestRecipeList += (sender, args) => {
-                var recipeArgument = args as RequestRecipeArgument;
-                var recipes = _recipeService.GetRecipeList();
-                _browser.JsCallback(recipeArgument?.Callback, jsBind.Serialize(recipes));
-            };
+            jsBind.OnRequestRecipeList += JsBind_OnRequestRecipeList;
         }
 
+        public void JsBind_OnRequestRecipeList(object sender, EventArgs e) {
+            var recipeArgument = e as RequestRecipeArgument;
+            var recipes = _recipeService.GetRecipeList();
+            _browser.JsCallback(recipeArgument?.Callback, _jsBind.Serialize(recipes));
+        }
 
         private void StashManagerOnStashUpdated(object o, EventArgs eventArgs) {
             if (!string.IsNullOrEmpty(_previousRecipe)) {
