@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using EvilsoftCommons;
 using IAGrim.Database.Interfaces;
 using IAGrim.Parsers.GameDataParsing.Model;
 using IAGrim.Parsers.GameDataParsing.UI;
+using log4net;
 
 namespace IAGrim.Parsers.GameDataParsing.Service {
+
     public class ParsingService {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ParsingService));
         private string _grimdawnLocation;
         private string _modLocation;
 
@@ -15,13 +20,14 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
         private readonly IDatabaseItemDao _databaseItemDao;
         private readonly IDatabaseItemStatDao _databaseItemStatDao;
         private readonly string _localizationFile;
+        public event EventHandler OnParseComplete;
 
 
         public ParsingService(
-            IItemTagDao itemTagDao, 
-            string grimdawnLocation, 
-            IDatabaseItemDao databaseItemDao, 
-            IDatabaseItemStatDao databaseItemStatDao, 
+            IItemTagDao itemTagDao,
+            string grimdawnLocation,
+            IDatabaseItemDao databaseItemDao,
+            IDatabaseItemStatDao databaseItemStatDao,
             string localizationFile
         ) {
             _itemTagDao = itemTagDao;
@@ -29,6 +35,31 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
             _databaseItemDao = databaseItemDao;
             _databaseItemStatDao = databaseItemStatDao;
             _localizationFile = localizationFile;
+        }
+
+        public static long GetHighestTimestamp(string install) {
+            try {
+                List<string> arzFiles = new List<string> {
+                    GrimFolderUtility.FindArzFile(install)
+                };
+
+                foreach (string path in GrimFolderUtility.GetGrimExpansionFolders(install)) {
+                    string expansionItems = GrimFolderUtility.FindArzFile(path);
+
+                    if (!string.IsNullOrEmpty(expansionItems)) {
+                        arzFiles.Add(GrimFolderUtility.FindArzFile(expansionItems));
+                    }
+                }
+
+                return arzFiles
+                    .Select(File.GetLastWriteTimeUtc)
+                    .Select(ts => ts.ToTimestamp())
+                    .Max();
+            }
+            catch (Exception e) {
+                Logger.Warn("Error fetching timestamp, defaulting to unchanged", e);
+                return 0;
+            }
         }
 
         public void Update(string install, string mod) {
@@ -40,24 +71,50 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
             var form = new ParsingDatabaseProgressView();
             var parser = new ArzParsingWrapper();
 
-            
+
+            List<string> tagfiles = new List<string>();
             string vanillaTags = GrimFolderUtility.FindArcFile(_grimdawnLocation, "text_en.arc");
-            string expansion1Tags = GrimFolderUtility.FindArcFile(Path.Combine(_grimdawnLocation, "gdx1"), "text_en.arc");
+            if (!string.IsNullOrEmpty(vanillaTags)) {
+                tagfiles.Add(vanillaTags);
+            }
+
+            foreach (string path in GrimFolderUtility.GetGrimExpansionFolders(_grimdawnLocation)) {
+                string expansionTags = GrimFolderUtility.FindArcFile(path, "text_en.arc");
+                if (!string.IsNullOrEmpty(expansionTags)) {
+                    tagfiles.Add(expansionTags);
+                }
+            }
+
             string modTags = string.IsNullOrEmpty(_modLocation) ? "" : GrimFolderUtility.FindArcFile(_modLocation, "text_en.arc");
+            if (!string.IsNullOrEmpty(modTags)) {
+                tagfiles.Add(modTags);
+            }
 
             List<Action> actions = new List<Action>();
-            actions.Add(() => parser.LoadTags(vanillaTags, expansion1Tags, modTags, _localizationFile, new WinformsProgressBar(form.LoadingTags).Tracker));
+
+
+            actions.Add(() => parser.LoadTags(tagfiles, _localizationFile, new WinformsProgressBar(form.LoadingTags).Tracker));
             actions.Add(() => _itemTagDao.Save(parser.Tags, new WinformsProgressBar(form.SavingTags).Tracker));
 
-            string vanillaItems = GrimFolderUtility.FindArzFile(_grimdawnLocation);
-            string expansion1Items = GrimFolderUtility.FindArzFile(Path.Combine(_grimdawnLocation, "gdx1"));
-            string modItems = string.IsNullOrEmpty(_modLocation) ? "" : GrimFolderUtility.FindArzFile(_modLocation);
-            actions.Add(() => parser.LoadItems(vanillaItems, expansion1Items, modItems, new WinformsProgressBar(form.LoadingItems).Tracker));
+            List<string> arzFiles = new List<string> {
+                GrimFolderUtility.FindArzFile(_grimdawnLocation)
+            };
+
+            foreach (string path in GrimFolderUtility.GetGrimExpansionFolders(_grimdawnLocation)) {
+                string expansionItems = GrimFolderUtility.FindArzFile(path);
+
+                if (!string.IsNullOrEmpty(expansionItems)) {
+                    arzFiles.Add(GrimFolderUtility.FindArzFile(expansionItems));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(_modLocation)) {
+                arzFiles.Add(GrimFolderUtility.FindArzFile(_modLocation));
+            }
+
+            actions.Add(() => parser.LoadItems(arzFiles, new WinformsProgressBar(form.LoadingItems).Tracker));
             actions.Add(() => parser.MapItemNames(new WinformsProgressBar(form.MappingItemNames).Tracker));
-            actions.Add(() => parser.RenamePetStats(new WinformsProgressBar(form.MappingPetStats).Tracker));
-
             actions.Add(() => _databaseItemDao.Save(parser.Items, new WinformsProgressBar(form.SavingItems).Tracker));
-
 
             // Invoke the background thread & show progress UI
             Thread t = new Thread(() => {
@@ -71,6 +128,8 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
 
             t.Start();
             form.ShowDialog();
+
+            OnParseComplete?.Invoke(this, null);
         }
     }
 }

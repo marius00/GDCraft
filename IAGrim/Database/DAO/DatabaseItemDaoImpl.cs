@@ -9,14 +9,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using DataAccess;
+
 using IAGrim.Database.DAO.Table;
 using IAGrim.Database.Model;
 using IAGrim.Parsers.GameDataParsing.Model;
-using IAGrim.Services.Dto;
-using log4net.Repository.Hierarchy;
 
 namespace IAGrim.Database {
     /// <summary>

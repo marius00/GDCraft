@@ -49,10 +49,7 @@ namespace IAGrim.UI {
         public MainWindow(
             CefBrowserHandler browser,
              IDatabaseItemDao databaseItemDao,
-             IDatabaseItemStatDao databaseItemStatDao,
              IDatabaseSettingDao databaseSettingDao,
-             ArzParser arzParser,
-            IItemTagDao itemTagDao, 
             ParsingService parsingService) {
             _cefBrowserHandler = browser;
             InitializeComponent();

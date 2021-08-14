@@ -59,31 +59,6 @@ namespace IAGrim.Database {
             progressTracker.Finalize();
         }
 
-        public Dictionary<string, ISet<DBSTatRow>> GetExpacSkillModifierSkills() {
-            string sql = $"SELECT {DatabaseItemTable.Record} AS Record, " +
-                         $"{DatabaseItemStatTable.Stat} AS Stat, " +
-                         $"{DatabaseItemStatTable.TextValue} AS TextValue, " +
-                         $"{DatabaseItemStatTable.Value} AS Value " +
-                         $"FROM {DatabaseItemTable.Table} item, {DatabaseItemStatTable.Table} stat " +
-                         $"WHERE {DatabaseItemTable.Record} LIKE '%/itemskillsgdx1/%' " +
-                         $"AND stat.{DatabaseItemStatTable.Item} = item.{DatabaseItemTable.Id} ORDER BY item.{DatabaseItemTable.Id}";
-
-            Dictionary<string, ISet<DBSTatRow>> stats = new Dictionary<string, ISet<DBSTatRow>>();
-
-            using (var session = SessionCreator.OpenSession()) {
-                IQuery query = session.CreateSQLQuery(sql).SetResultTransformer(Transformers.AliasToBean<DBSTatRow>());
-                foreach (DBSTatRow row in query.List()) {
-                    if (!stats.ContainsKey(row.Record)) {
-                        stats[row.Record] = new HashSet<DBSTatRow>();
-                    }
-
-                    stats[row.Record].Add(row);
-                }
-            }
-
-            return stats;
-        }
-
         
         public string GetSkillName(string skillRecord) {
 
@@ -104,63 +79,6 @@ namespace IAGrim.Database {
             }
         }
 
-
-        public Dictionary<long, List<DBSTatRow>> GetStats(List<long> records, StatFetch fetchMode) {
-            using (var session = SessionCreator.OpenSession()) {
-                var statMap = new Dictionary<long, List<DBSTatRow>>();
-
-                if (fetchMode != StatFetch.Skills)
-                    throw new ArgumentException(nameof(fetchMode));
-
-                Logger.Debug($"Fetching all stats for {records.Count} items, fetchMode={fetchMode}");
-
-
-                string sql = string.Join(" ",
-                    new[] {
-                        $"select db.{DatabaseItemTable.Id} as Id, db.{DatabaseItemTable.Record} as Record, s.{DatabaseItemStatTable.Stat} as Stat, s.{DatabaseItemStatTable.Value} as Value, s.{DatabaseItemStatTable.TextValue} as TextValue from {DatabaseItemTable.Table} db, {DatabaseItemStatTable.Table} s",
-                        $"where s.{DatabaseItemStatTable.Item} = db.{DatabaseItemTable.Id}",
-                        $"AND ({DatabaseItemStatTable.Value} > 0 or {DatabaseItemStatTable.Stat} in ( :whitelist ))",
-                        //$"AND db.{DatabaseItemTable.Id} IN (SELECT map.{SkillMappingTable.Item} FROM {SkillMappingTable.Table} map)",
-                        $"AND NOT {DatabaseItemStatTable.Stat} IN ( :blacklist )",
-                        records.Any() ? $"AND db.{DatabaseItemTable.Id} IN ( :filter )" : ""
-                    }
-                );
-
-
-                IQuery query = session.CreateSQLQuery(sql)
-                    .SetParameterList("whitelist", SpecialStats)
-                    .SetParameterList("blacklist", SpecialIgnores)
-                    .SetResultTransformer(Transformers.AliasToBean<DBSTatRow>());
-
-                Logger.Debug(sql);
-                if (records.Count > 0) {
-                    query.SetParameterList("filter", records);
-                }
-
-
-                foreach (DBSTatRow row in query.List<DBSTatRow>()) {
-                    if (!statMap.ContainsKey(row.Id))
-                        statMap[row.Id] = new List<DBSTatRow>();
-
-                    statMap[row.Id].Add(row);
-                }
-
-                Logger.Debug($"Fetching stat for {statMap.Count} records");
-
-
-#if DEBUG
-                // If you have run into this exception, you've messed up.
-                // This is a safety catch to detect issues with applying stats too broadly.
-                if (statMap.Count > 10000) {
-                    throw new InvalidOperationException(
-                        "Stat fetch has been done with too many items, severe performance penalties.");
-                }
-#endif
-
-
-                return statMap;
-            }
-        }
 
         public Dictionary<string, string> MapItemBitmaps(List<string> records) {
             Dictionary<string, int> bitmapScores = new Dictionary<string, int> {

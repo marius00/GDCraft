@@ -45,5 +45,9 @@ namespace IAGrim.Parsers.GameDataParsing.Model {
         public void Finalize() {
             Interlocked.Add(ref _currentValue, _maxValue - _currentValue);
         }
+
+        public void MaxProgress() {
+            Interlocked.Add(ref _currentValue, _maxValue - _currentValue);
+        }
     }
 }

@@ -29,6 +29,39 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
             return String.Empty;
         }
 
+
+        /// <summary>
+        /// Returns expansion folders from Grim Dawn, given a Grim Dawn install path.
+        /// </summary>
+        public static List<string> GetGrimExpansionFolders(string grimdawnLocation) {
+            List<string> paths = new List<string>();
+
+            bool AddIfExists(string p) {
+                if (Directory.Exists(p)) {
+                    paths.Add(p);
+                    return true;
+                }
+
+                return false;
+            }
+
+            for (int i = 9; i >= 1; i--) {
+                AddIfExists(Path.Combine(grimdawnLocation, $"gdx{i}"));
+            }
+
+
+            // No useful items, only writs. Not worth the insane parsing time.
+            for (int i = 9; i >= 1; i--) {
+                AddIfExists(Path.Combine(grimdawnLocation, $"survivalmode{i}"));
+            }
+
+            AddIfExists(Path.Combine(grimdawnLocation, "mods", "survivalmode"));
+
+
+            return paths;
+
+        }
+
         /// <summary>
         ///     Locate a given Arc file for a given mod or GD install
         /// </summary>

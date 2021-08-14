@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using DataAccess;
 using EvilsoftCommons;
 using IAGrim.Database;
@@ -16,6 +17,7 @@ using log4net;
 using log4net.Repository.Hierarchy;
 
 namespace IAGrim.Parsers.GameDataParsing.Service {
+
     class ArzParsingWrapper {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ArzParsingWrapper));
         private readonly ItemTagAccumulator _tagAccumulator = new ItemTagAccumulator();
@@ -24,26 +26,32 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
         public List<ItemTag> Tags => _tagAccumulator.Tags;
 
         public void LoadItems(
-            string itemsfileVanilla,
-            string itemsfileExpansion1,
-            string itemsfileMod,
+            List<string> arzFiles,
             ProgressTracker tracker
         ) {
-            int numFiles = GrimFolderUtility.CountExisting(itemsfileVanilla, itemsfileExpansion1, itemsfileMod);
-            tracker.MaxValue = numFiles;
+            tracker.MaxValue = arzFiles.Select(File.Exists).Count();
+
+            // Developers can flip this switch to get a full dump of the GD database. 
+            // Setting it to true will cause the parsing to skip a lot of data that IA does not need.
+            const bool skipIrrelevantStats = true;  // "skipLots"
 
             ItemAccumulator accumulator = new ItemAccumulator();
-            if (File.Exists(itemsfileVanilla)) {
-                Parser.Arz.ArzParser.LoadItemRecords(itemsfileVanilla, true).ForEach(accumulator.Add);
-                tracker.Increment();
+            try {
+                foreach (string arzFile in arzFiles) {
+                    if (File.Exists(arzFile)) {
+                        Logger.Debug($"Parsing / Loading items from {arzFile}");
+                        Parser.Arz.ArzParser.LoadItemRecords(arzFile, skipIrrelevantStats).ForEach(accumulator.Add);
+                        tracker.Increment();
+                    }
+                    else {
+                        Logger.Debug($"Ignoring non existing arz file {arzFile}");
+                    }
+                }
             }
-            if (File.Exists(itemsfileExpansion1)) {
-                Parser.Arz.ArzParser.LoadItemRecords(itemsfileExpansion1, true).ForEach(accumulator.Add);
-                tracker.Increment();
-            }
-            if (File.Exists(itemsfileMod)) {
-                Parser.Arz.ArzParser.LoadItemRecords(itemsfileMod, true).ForEach(accumulator.Add);
-                tracker.Increment();
+            catch (ArgumentException ex) {
+                Logger.Warn(ex.Message, ex);
+                MessageBox.Show("Game installation is corrupted.\nPlease verify the integrity of your Grim Dawn installation and try again.\n\n(Easily done in steam)");
+                throw ex;
             }
 
             Items = accumulator.Items;
@@ -60,24 +68,28 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
         }
 
         public void LoadTags(
-            string tagfileVanilla,
-            string tagfileExpansion1,
-            string tagfileMod,
+            List<string> tagfiles,
             string localizationFile,
             ProgressTracker tracker
         ) {
-            var files = new[] {tagfileVanilla, tagfileExpansion1, tagfileMod};
-            int numFiles = files.Length - files.Where(string.IsNullOrEmpty).Count() + (string.IsNullOrEmpty(localizationFile) ? 0 : 1);
+            int numFiles = tagfiles.Count - tagfiles.Where(string.IsNullOrEmpty).Count() + (string.IsNullOrEmpty(localizationFile) ? 0 : 1);
             tracker.MaxValue = numFiles;
 
             // Load tags in a prioritized order
-            foreach (var tagfile in files) {
+            foreach (var tagfile in tagfiles) {
                 if (File.Exists(tagfile)) {
+                    Logger.Debug($"Loading tags from {tagfile}");
                     LoadTags(tagfile);
+                }
+                else {
+                    Logger.Debug($"Ignoring non-existing tagfile {tagfile}");
                 }
 
                 tracker.Increment();
             }
+
+
+            tracker.MaxProgress();
         }
 
 
@@ -85,7 +97,8 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
             var tags = Tags;
 
             tracker.MaxValue = Items.Count;
-            for (int i = 0; i < Items.Count; i++) {
+
+            Parallel.For(0, Items.Count, i => {
                 var item = Items[i];
                 if (!item.Slot.StartsWith("Loot")) {
                     var keytags = new[] {
@@ -105,40 +118,13 @@ namespace IAGrim.Parsers.GameDataParsing.Service {
                 }
 
                 tracker.Increment();
-            }
 
-            tracker.Finalize();
+            });
+
+            tracker.MaxProgress();
         }
 
 
-        public void RenamePetStats(ProgressTracker tracker) {
-            Logger.Debug("Detecting records with pet bonus stats..");
-
-            var petRecords = Items.SelectMany(m => m.Stats.Where(s => s.Stat == "petBonusName")
-                    .Select(s => s.TextValue))
-                .ToList(); // ToList for performance reasons
-
-            var petItems = Items.Where(m => petRecords.Contains(m.Record)).ToList();
-            tracker.MaxValue = petItems.Count;
-            foreach (var petItem in petItems) {
-                var stats = petItem.Stats.Select(s => new DatabaseItemStat {
-                    Stat = "pet" + s.Stat,
-                    TextValue = s.TextValue,
-                    Value = s.Value,
-                    Parent = s.Parent
-                }).ToList();
-
-                petItem.Stats.Clear();
-                petItem.Stats = stats;
-                tracker.Increment();
-            }
-
-            Items.RemoveAll(m => petRecords.Contains(m.Record));
-            Items.AddRange(petItems);
-
-            tracker.Finalize();
-            Logger.Debug($"Classified {petItems.Count()} records as pet stats");
-        }
 
     }
 }

@@ -186,7 +186,6 @@ namespace IAGrim {
             IDatabaseItemStatDao databaseItemStatDao = new DatabaseItemStatRepo(threadExecuter, factory);
             IItemTagDao itemTagDao = new ItemTagRepo(threadExecuter, factory);
             
-            ArzParser arzParser = new ArzParser();
 
             // TODO: GD Path has to be an input param, as does potentially mods.
             ParsingService parsingService = new ParsingService(itemTagDao, null, databaseItemDao, databaseItemStatDao, Properties.Settings.Default.LocalizationFile);
@@ -203,10 +202,7 @@ namespace IAGrim {
             using (CefBrowserHandler browser = new CefBrowserHandler()) {
                 _mw = new MainWindow(browser, 
                     databaseItemDao, 
-                    databaseItemStatDao, 
                     databaseSettingDao, 
-                    arzParser,
-                    itemTagDao,
                     parsingService
                 );
 
@@ -224,22 +220,6 @@ namespace IAGrim {
                 }
 
                 if (!string.IsNullOrEmpty(GDPath) && Directory.Exists(GDPath)) {
-                    /*
-                    if (arzParser.NeedUpdate(GDPath)) {                        
-                        ParsingDatabaseScreen parserUI = new ParsingDatabaseScreen(
-                            databaseSettingDao,
-                            arzParser,
-                            GDPath, 
-                            Properties.Settings.Default.LocalizationFile, 
-                            false, 
-                            !isVanilla);
-                        parserUI.ShowDialog();
-                    }
-
-                    if (playerItemDao.RequiresStatUpdate()) {
-                        UpdatingPlayerItemsScreen x = new UpdatingPlayerItemsScreen(playerItemDao);
-                        x.ShowDialog();
-                    }*/
 
                     var numFiles = Directory.GetFiles(GlobalPaths.StorageFolder).Length;
                     if (numFiles < 2000) {
