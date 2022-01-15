@@ -104,5 +104,20 @@ namespace IAGrim.UI {
         private void listView1_SelectedIndexChanged(object sender, EventArgs e) {
             buttonForceUpdate.Enabled = listViewInstalls.SelectedItems.Count > 0;
         }
+
+        private void buttonAddPath_Click(object sender, EventArgs e) {
+            var d = new FolderBrowserDialog();
+            if (d.ShowDialog() == DialogResult.OK) {
+                if (File.Exists(Path.Combine(d.SelectedPath, "game.dll"))) {
+                    ListViewItem vanilla = new ListViewItem("Manual");
+                    vanilla.SubItems.Add(d.SelectedPath);
+                    vanilla.Tag = new ListViewEntry { Path = d.SelectedPath, IsVanilla = true };
+                    listViewInstalls.Items.Add(vanilla);
+                }
+                else {
+                    MessageBox.Show("Could not find Grim dawn in the selected folder.");
+                }
+            }
+        }
     }
 }

@@ -182,6 +182,11 @@ namespace IAGrim {
                 var p = Path.Combine(Path.GetDirectoryName(possible), "database", "database.arz");
                 if (File.Exists(p))
                     return Path.GetDirectoryName(possible);
+
+                // /x64 folder.
+                p = Path.Combine(Path.GetDirectoryName(possible), "..", "database", "database.arz");
+                if (File.Exists(p))
+                    return Path.GetDirectoryName(Path.Combine(possible, ".."));
             }
 
             return string.Empty;

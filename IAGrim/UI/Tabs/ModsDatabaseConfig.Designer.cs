@@ -31,6 +31,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buttonForceUpdate = new FirefoxButton();
+            this.buttonAddPath = new FirefoxButton();
             this.panelBox5.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -39,6 +40,7 @@
             this.panelBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelBox5.Controls.Add(this.buttonAddPath);
             this.panelBox5.Controls.Add(this.listViewMods);
             this.panelBox5.Controls.Add(this.listViewInstalls);
             this.panelBox5.Controls.Add(this.buttonForceUpdate);
@@ -132,6 +134,20 @@
             this.buttonForceUpdate.Text = "Load Database";
             this.buttonForceUpdate.Click += new System.EventHandler(this.buttonForceUpdate_Click);
             // 
+            // buttonAddPath
+            // 
+            this.buttonAddPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAddPath.EnabledCalc = true;
+            this.buttonAddPath.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.buttonAddPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(56)))), ((int)(((byte)(68)))), ((int)(((byte)(80)))));
+            this.buttonAddPath.Location = new System.Drawing.Point(207, 358);
+            this.buttonAddPath.Name = "buttonAddPath";
+            this.buttonAddPath.Size = new System.Drawing.Size(192, 32);
+            this.buttonAddPath.TabIndex = 7;
+            this.buttonAddPath.Tag = "iatag_ui_add_path";
+            this.buttonAddPath.Text = "Add path";
+            this.buttonAddPath.Click += new System.EventHandler(this.buttonAddPath_Click);
+            // 
             // ModsDatabaseConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -157,5 +173,6 @@
         private System.Windows.Forms.ListView listViewMods;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private FirefoxButton buttonAddPath;
     }
 }
