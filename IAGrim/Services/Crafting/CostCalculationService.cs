@@ -54,7 +54,7 @@ namespace IAGrim.Services.Crafting {
                 if (owned.ContainsKey(recipe.Record)) {
                     var numSpent = Math.Min(owned[recipe.Record], recipe.NumRequired);
                     owned[recipe.Record] -= numSpent;
-                    recipe.NumOwned = numSpent;
+                    recipe.NumOwned = 0;
 
                     if (numSpent > 0) {
                         ReduceChildrenTotals(recipe, recipe.NumRequired, recipe.NumRequired - numSpent);

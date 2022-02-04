@@ -49,8 +49,12 @@ function updateTree() {
     });
 }
 
+/* JSON.stringify(recipes); */
+let recipes = {};
+
 function ____callbackSetIngredients(dataset) {
-    console.log("Ingredientes", dataset);
+    // console.log("Ingredientes", dataset);
+    recipes[dataset.record] = dataset;
     componentCraftVM.items(dataset);
     itemSumVM.sum([]);
     updateTree();
@@ -62,6 +66,7 @@ function ____callbackSetIngredients(dataset) {
 
 var lastRecord = '';
 function updateView(record) {
+    console.log("Requesting recipe for", record);
     data.requestRecipeIngredients(record, '____callbackSetIngredients');
     lastRecord = record;
 }
@@ -75,16 +80,19 @@ function ____callbackSetItemList(recipes) {
     for (let idx = 0; idx < recipes.relics.length; idx++) {
         const relic = recipes.relics[idx];
         $('#relicSelect').append($(`<option value=${relic.record}>${relic.label}</option>`));
+        data.requestRecipeIngredients(relic.record, '____callbackSetIngredients');
     }
 
     for (let idx = 0; idx < recipes.misc.length; idx++) {
         const item = recipes.misc[idx];
         $('#recipeSelect').append($(`<option value=${item.record}>${item.label}</option>`));
+        data.requestRecipeIngredients(item.record, '____callbackSetIngredients');
     }
 
     for (let idx = 0; idx < recipes.components.length; idx++) {
         const component = recipes.components[idx];
         $('#componentSelect').append($(`<option value=${component.record}>${component.label}</option>`));
+        data.requestRecipeIngredients(component.record, '____callbackSetIngredients');
     }
 
     $('.chosen-select').chosen();

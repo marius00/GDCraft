@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
-
+using System.Linq;
 using IAGrim.Database.DAO.Table;
 using IAGrim.Database.Model;
 using IAGrim.Parsers.GameDataParsing.Model;
@@ -212,6 +212,23 @@ namespace IAGrim.Database {
             }
         }
 
+        public List<DatabaseItemDto> GetNameMapping() {
+            string sql = @" 
+                SELECT baserecord as Record, name as Name
+                FROM DatabaseItem_v2 i
+                WHERE name IS NOT NULL AND name != ''";
+
+            using (ISession session = SessionCreator.OpenSession()) {
+                using (ITransaction transaction = session.BeginTransaction()) {
+
+                    IQuery query = session.CreateSQLQuery(sql)
+                        .SetResultTransformer(Transformers.AliasToBean<DatabaseItemDto>());
+                    return new List<DatabaseItemDto>(query.List<DatabaseItemDto>());
+                }
+            }
+
+        }
+
         public List<DatabaseItemDto> GetCraftableItems() {
             using (ISession session = SessionCreator.OpenSession()) {
                 using (ITransaction transaction = session.BeginTransaction()) {
@@ -238,6 +255,7 @@ namespace IAGrim.Database {
 
                     IQuery query = session.CreateSQLQuery(sql)
                         .SetResultTransformer(Transformers.AliasToBean<InteralRowStat>());
+
 
                     return ToDto(query.List<InteralRowStat>());
                 }

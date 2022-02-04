@@ -49,6 +49,12 @@ namespace IAGrim.Database.Synchronizer {
             );
         }
 
+        public List<DatabaseItemDto> GetNameMapping() {
+            return ThreadExecuter.Execute(
+                () => _repo.GetNameMapping()
+            );
+        }
+
         public Dictionary<string, string> GetTagDictionary() {
             return ThreadExecuter.Execute(
                 () => _repo.GetTagDictionary()

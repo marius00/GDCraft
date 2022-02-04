@@ -16,6 +16,7 @@ namespace IAGrim.Services.Crafting {
         private readonly string[] _reagents = { "reagentBase", "reagent1", "reagent2", "reagent3", "reagent4", "reagent5", "reagent6" };
         private readonly List<DatabaseItemDto> _formulas;
         private readonly List<DatabaseItemDto> _craftables;
+        private readonly List<DatabaseItemDto> _nameMapping;
 
 
         // These components form a loop, break the loop when one is spotted [Stack Overflow]
@@ -39,6 +40,7 @@ namespace IAGrim.Services.Crafting {
             this._itemDao = itemDao;
             _formulas = _itemDao.GetByClass("ItemArtifactFormula");
             _craftables = _itemDao.GetCraftableItems();
+            _nameMapping = _itemDao.GetNameMapping();
         }
 
 
@@ -111,6 +113,27 @@ namespace IAGrim.Services.Crafting {
         /// <returns>A tree showing the construction costs for the given record</returns>
         private ComponentCost CreateComponent(IList<DatabaseItemDto> formulas, IList<DatabaseItemDto> components, string record, int numRequired, int depth = 0) {
             // Obs: if 'item' is null, search the database for it, some items are components without being craftable
+            if (!components.Any(m => m.Record == record)) {
+                if (_nameMapping.Any(m => m.Record == record)) {
+
+                    return new ComponentCost {
+                        NumRequired = numRequired,
+                        Name = _nameMapping.First(m => m.Record == record).Name,
+                        Bitmap = "",
+                        Cost = new List<ComponentCost>(),
+                        Record = record
+                    };
+                }
+                else {
+                    return new ComponentCost {
+                        NumRequired = numRequired,
+                        Name = "Unknown",
+                        Bitmap = "",
+                        Cost = new List<ComponentCost>(),
+                        Record = record
+                    };
+                }
+            }
             var item = components.FirstOrDefault(m => m.Record == record);
             if (item == null) {
                 item = _itemDao.FindDtoByRecord(record);
