@@ -52,6 +52,8 @@ function updateView(record) {
     itemSumVM.sum([]);
     updateTree();
     updateSum();
+	console.log('Recipe updated to', dataset[record]);
+	history.pushState(null, '', 'https://grimdawn.evilsoft.net/crafting/?q=' + record)
 }
 
 
@@ -148,3 +150,10 @@ function updateSum() {
 
     itemSumVM.sum(values);
 }
+
+$(document).ready(() => {
+	let initialRecord = new URLSearchParams(window.location.search).get('q');
+	if (initialRecord) {
+		updateView(initialRecord);
+	}
+});
